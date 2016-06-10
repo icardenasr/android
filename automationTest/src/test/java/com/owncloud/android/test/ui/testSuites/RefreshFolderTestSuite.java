@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.juntadeandalucia.nube.test.ui.testSuites;
 
 import static org.junit.Assert.*;
 import io.appium.java_client.android.AndroidDriver;
@@ -32,9 +32,9 @@ import org.junit.runners.MethodSorters;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.UnfinishedTestCategory;
-import com.owncloud.android.test.ui.models.FileListView;
+import com.juntadeandalucia.nube.test.ui.actions.Actions;
+import com.juntadeandalucia.nube.test.ui.groups.UnfinishedTestCategory;
+import com.juntadeandalucia.nube.test.ui.models.FileListView;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

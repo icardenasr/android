@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.juntadeandalucia.nube.test.ui.testSuites;
 
 import io.appium.java_client.android.AndroidDriver;
 
@@ -32,13 +32,13 @@ import org.junit.rules.TestName;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.ScreenOrientation;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.NoIgnoreTestCategory;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.MenuList;
-import com.owncloud.android.test.ui.models.PassCodeRequestView;
-import com.owncloud.android.test.ui.models.PassCodeView;
-import com.owncloud.android.test.ui.models.SettingsView;
+import com.juntadeandalucia.nube.test.ui.actions.Actions;
+import com.juntadeandalucia.nube.test.ui.groups.NoIgnoreTestCategory;
+import com.juntadeandalucia.nube.test.ui.models.FileListView;
+import com.juntadeandalucia.nube.test.ui.models.MenuList;
+import com.juntadeandalucia.nube.test.ui.models.PassCodeRequestView;
+import com.juntadeandalucia.nube.test.ui.models.PassCodeView;
+import com.juntadeandalucia.nube.test.ui.models.SettingsView;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PasscodeTestSuite {

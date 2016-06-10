@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.actions;
+package com.juntadeandalucia.nube.test.ui.actions;
 
 import java.util.HashMap;
 
@@ -30,20 +30,20 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.owncloud.android.test.ui.models.CertificatePopUp;
-import com.owncloud.android.test.ui.models.ElementMenuOptions;
-import com.owncloud.android.test.ui.models.GmailSendMailView;
-import com.owncloud.android.test.ui.models.ShareView;
-import com.owncloud.android.test.ui.models.UploadFilesView;
-import com.owncloud.android.test.ui.models.LoginForm;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.MenuList;
-import com.owncloud.android.test.ui.models.NewFolderPopUp;
-import com.owncloud.android.test.ui.models.RemoveConfirmationView;
-import com.owncloud.android.test.ui.models.SettingsView;
-import com.owncloud.android.test.ui.models.WaitAMomentPopUp;
-import com.owncloud.android.test.ui.testSuites.Common;
-import com.owncloud.android.test.ui.testSuites.Config;
+import com.juntadeandalucia.nube.test.ui.models.CertificatePopUp;
+import com.juntadeandalucia.nube.test.ui.models.ElementMenuOptions;
+import com.juntadeandalucia.nube.test.ui.models.GmailSendMailView;
+import com.juntadeandalucia.nube.test.ui.models.ShareView;
+import com.juntadeandalucia.nube.test.ui.models.UploadFilesView;
+import com.juntadeandalucia.nube.test.ui.models.LoginForm;
+import com.juntadeandalucia.nube.test.ui.models.FileListView;
+import com.juntadeandalucia.nube.test.ui.models.MenuList;
+import com.juntadeandalucia.nube.test.ui.models.NewFolderPopUp;
+import com.juntadeandalucia.nube.test.ui.models.RemoveConfirmationView;
+import com.juntadeandalucia.nube.test.ui.models.SettingsView;
+import com.juntadeandalucia.nube.test.ui.models.WaitAMomentPopUp;
+import com.juntadeandalucia.nube.test.ui.testSuites.Common;
+import com.juntadeandalucia.nube.test.ui.testSuites.Config;
 
 public class Actions {
 

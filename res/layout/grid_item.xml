@@ -16,14 +16,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
   
 -->
-<com.owncloud.android.ui.SquareLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ListItemLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    android:background="@drawable/list_selector"
-    android:gravity="center"
-    android:orientation="vertical" >
+<es.juntadeandalucia.nube.ui.SquareLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                android:id="@+id/ListItemLayout"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center_horizontal"
+                                                android:background="@drawable/list_selector"
+                                                android:gravity="center"
+                                                android:orientation="vertical" >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -82,4 +82,4 @@
         android:textColor="@color/textColor"
         android:textSize="16dip" />
 
-</com.owncloud.android.ui.SquareLinearLayout>
+</es.juntadeandalucia.nube.ui.SquareLinearLayout>

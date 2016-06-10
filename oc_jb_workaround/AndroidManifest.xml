@@ -14,7 +14,7 @@
         android:label="@string/workaround_app_name"
         >
         <service
-            android:name=".AccountAuthenticatorService"
+            android:name="es.juntadeandalucia.nube.workaround.accounts.AccountAuthenticatorService"
             android:exported="false">
             <intent-filter android:priority="1">
                 <action android:name="android.accounts.AccountAuthenticator" />

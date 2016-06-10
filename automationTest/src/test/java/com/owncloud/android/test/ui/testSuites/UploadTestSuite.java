@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.juntadeandalucia.nube.test.ui.testSuites;
 
 
 import static org.junit.Assert.*;
@@ -37,21 +37,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.FailingTestCategory;
-import com.owncloud.android.test.ui.groups.InProgressCategory;
-import com.owncloud.android.test.ui.groups.NoIgnoreTestCategory;
-import com.owncloud.android.test.ui.groups.SmokeTestCategory;
-import com.owncloud.android.test.ui.groups.UnfinishedTestCategory;
-import com.owncloud.android.test.ui.models.FileDetailsView;
-import com.owncloud.android.test.ui.models.ElementMenuOptions;
-import com.owncloud.android.test.ui.models.GmailEmailListView;
-import com.owncloud.android.test.ui.models.GmailEmailView;
-import com.owncloud.android.test.ui.models.ImageView;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.NotificationView;
-import com.owncloud.android.test.ui.models.SettingsView;
-import com.owncloud.android.test.ui.models.UploadView;
+import com.juntadeandalucia.nube.test.ui.actions.Actions;
+import com.juntadeandalucia.nube.test.ui.groups.FailingTestCategory;
+import com.juntadeandalucia.nube.test.ui.groups.InProgressCategory;
+import com.juntadeandalucia.nube.test.ui.groups.NoIgnoreTestCategory;
+import com.juntadeandalucia.nube.test.ui.groups.SmokeTestCategory;
+import com.juntadeandalucia.nube.test.ui.groups.UnfinishedTestCategory;
+import com.juntadeandalucia.nube.test.ui.models.FileDetailsView;
+import com.juntadeandalucia.nube.test.ui.models.ElementMenuOptions;
+import com.juntadeandalucia.nube.test.ui.models.GmailEmailListView;
+import com.juntadeandalucia.nube.test.ui.models.GmailEmailView;
+import com.juntadeandalucia.nube.test.ui.models.ImageView;
+import com.juntadeandalucia.nube.test.ui.models.FileListView;
+import com.juntadeandalucia.nube.test.ui.models.NotificationView;
+import com.juntadeandalucia.nube.test.ui.models.SettingsView;
+import com.juntadeandalucia.nube.test.ui.models.UploadView;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

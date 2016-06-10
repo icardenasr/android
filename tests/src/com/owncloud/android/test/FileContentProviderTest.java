@@ -1,7 +1,7 @@
-package com.owncloud.android.test;
+package com.juntadeandalucia.nube.test;
 
-import com.owncloud.android.db.ProviderMeta.ProviderTableMeta;
-import com.owncloud.android.providers.FileContentProvider;
+import com.juntadeandalucia.nube.db.ProviderMeta.ProviderTableMeta;
+import com.juntadeandalucia.nube.providers.FileContentProvider;
 import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.Build;

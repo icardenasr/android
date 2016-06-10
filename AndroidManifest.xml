@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.owncloud.android"
+    package="es.juntadeandalucia.nube"
     android:versionCode="20000000"
     android:versionName="2.0.0" >
 
@@ -56,13 +56,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".MainApp"
+        android:name="es.juntadeandalucia.nube.MainApp"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.ownCloud"
-        android:manageSpaceActivity=".ui.activity.ManageSpaceActivity">
+        android:manageSpaceActivity="es.juntadeandalucia.nube.ui.activity.ManageSpaceActivity">
         <activity
-            android:name=".ui.activity.FileDisplayActivity"
+            android:name="es.juntadeandalucia.nube.ui.activity.FileDisplayActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -70,8 +70,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.UploadFilesActivity" />
-        <activity android:name=".ui.activity.ReceiveExternalFilesActivity"
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.UploadFilesActivity" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.ReceiveExternalFilesActivity"
                   android:taskAffinity=""
                   android:excludeFromRecents="true">
             <intent-filter>
@@ -90,19 +90,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.Preferences"
+            android:name="es.juntadeandalucia.nube.ui.activity.Preferences"
             android:theme="@style/Theme.ownCloud" >
         </activity>
         <activity
-            android:name=".ui.preview.PreviewImageActivity"
+            android:name="es.juntadeandalucia.nube.ui.preview.PreviewImageActivity"
             android:theme="@style/Theme.ownCloud.Overlay" />
         <activity
-            android:name=".ui.preview.PreviewVideoActivity"
+            android:name="es.juntadeandalucia.nube.ui.preview.PreviewVideoActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.ownCloud.Fullscreen" />
 
         <service
-            android:name=".authentication.AccountAuthenticatorService"
+            android:name="es.juntadeandalucia.nube.authentication.AccountAuthenticatorService"
             android:exported="true" >
             <intent-filter android:priority="100" >
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -113,7 +113,7 @@
                 android:resource="@xml/authenticator" />
         </service>
         <service
-            android:name=".syncadapter.FileSyncService"
+            android:name="es.juntadeandalucia.nube.syncadapter.FileSyncService"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
@@ -125,7 +125,7 @@
         </service>
 
         <provider
-            android:name=".providers.FileContentProvider"
+            android:name="es.juntadeandalucia.nube.providers.FileContentProvider"
             android:authorities="@string/authority"
             android:enabled="true"
             android:exported="false"
@@ -133,14 +133,14 @@
             android:syncable="true" />
 
         <provider
-            android:name=".providers.UsersAndGroupsSearchProvider"
-            android:authorities="com.owncloud.android.providers.UsersAndGroupsSearchProvider"
+            android:name="es.juntadeandalucia.nube.providers.UsersAndGroupsSearchProvider"
+            android:authorities="es.juntadeandalucia.nube.providers.UsersAndGroupsSearchProvider"
             android:enabled="true"
             android:exported="false"
             android:label="@string/search_users_and_groups_hint" />
 
         <activity
-            android:name=".authentication.AuthenticatorActivity"
+            android:name="es.juntadeandalucia.nube.authentication.AuthenticatorActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.ownCloud.noActionBar" >
@@ -159,29 +159,29 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.OperationsService" />
-        <service android:name=".files.services.FileDownloader" />
-        <service android:name=".files.services.FileUploader" />
-        <service android:name=".media.MediaService" />
+        <service android:name="es.juntadeandalucia.nube.services.OperationsService" />
+        <service android:name="es.juntadeandalucia.nube.files.services.FileDownloader" />
+        <service android:name="es.juntadeandalucia.nube.files.services.FileUploader" />
+        <service android:name="es.juntadeandalucia.nube.media.MediaService" />
 
-        <activity android:name=".ui.activity.PassCodeActivity" />
-        <activity android:name=".ui.activity.ConflictsResolveActivity"/>
-        <activity android:name=".ui.activity.GenericExplanationActivity"/>
-        <activity android:name=".ui.activity.ErrorsWhileCopyingHandlerActivity"/>
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.PassCodeActivity" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.ConflictsResolveActivity"/>
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.GenericExplanationActivity"/>
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.ErrorsWhileCopyingHandlerActivity"/>
         
-        <activity android:name=".ui.activity.LogHistoryActivity"/>
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.LogHistoryActivity"/>
 
-        <activity android:name=".ui.errorhandling.ErrorShowActivity" />
-        <activity android:name=".ui.activity.UploadListActivity" />
+        <activity android:name="es.juntadeandalucia.nube.ui.errorhandling.ErrorShowActivity" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.UploadListActivity" />
         
-        <receiver android:name=".files.services.ConnectivityActionReceiver"
+        <receiver android:name="es.juntadeandalucia.nube.files.services.ConnectivityActionReceiver"
 		    android:enabled="true" android:label="ConnectivityActionReceiver">
 		    <intent-filter>
 		        <!--action android:name="android.net.conn.CONNECTIVITY_CHANGE"/-->
 		        <action android:name="android.net.wifi.STATE_CHANGE"/>
 		    </intent-filter>
 		</receiver>
-		<receiver android:name=".files.InstantUploadBroadcastReceiver">
+		<receiver android:name="es.juntadeandalucia.nube.files.InstantUploadBroadcastReceiver">
             <intent-filter>
 
                 <!-- unofficially supported by many Android phones but not by HTC devices: -->
@@ -197,26 +197,26 @@
                 <data android:mimeType="video/*" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".files.BootupBroadcastReceiver" >
+        <receiver android:name="es.juntadeandalucia.nube.files.BootupBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".services.observer.FileObserverService" />
+        <service android:name="es.juntadeandalucia.nube.services.observer.FileObserverService" />
 
         <activity
-            android:name=".ui.activity.CopyToClipboardActivity"
+            android:name="es.juntadeandalucia.nube.ui.activity.CopyToClipboardActivity"
             android:icon="@drawable/copy_link"
             android:label="@string/copy_link" />
         <activity
-            android:name=".ui.activity.FolderPickerActivity"
+            android:name="es.juntadeandalucia.nube.ui.activity.FolderPickerActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".ui.activity.UploadPathActivity"
+            android:name="es.juntadeandalucia.nube.ui.activity.UploadPathActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".ui.activity.ShareActivity"
+            android:name="es.juntadeandalucia.nube.ui.activity.ShareActivity"
             android:label="@string/share_dialog_title"
             android:theme="@style/Theme.ownCloud.Dialog.NoTitle"
             android:launchMode="singleTop"
@@ -227,7 +227,7 @@
             <meta-data android:name="android.app.searchable"
                        android:resource="@xml/users_and_groups_searchable"/>
         </activity>
-        <activity android:name=".ui.activity.ManageSpaceActivity"
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.ManageSpaceActivity"
                   android:label="@string/manage_space_title"
                   android:theme="@style/Theme.ownCloud" />
     </application>
