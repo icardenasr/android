@@ -63,42 +63,49 @@
         android:manageSpaceActivity="es.juntadeandalucia.nube.ui.activity.ManageSpaceActivity">
         <activity
             android:name="es.juntadeandalucia.nube.ui.activity.FileDisplayActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.UploadFilesActivity" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.UploadFilesActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
         <activity android:name="es.juntadeandalucia.nube.ui.activity.ReceiveExternalFilesActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"
                   android:taskAffinity=""
                   android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
         <activity
             android:name="es.juntadeandalucia.nube.ui.activity.Preferences"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.ownCloud" >
         </activity>
         <activity
             android:name="es.juntadeandalucia.nube.ui.preview.PreviewImageActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.ownCloud.Overlay" />
         <activity
             android:name="es.juntadeandalucia.nube.ui.preview.PreviewVideoActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.ownCloud.Fullscreen" />
 
         <service
@@ -143,18 +150,17 @@
             android:name="es.juntadeandalucia.nube.authentication.AuthenticatorActivity"
             android:exported="true"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.ownCloud.noActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="@string/oauth2_redirect_scheme" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.owncloud.android.workaround.accounts.CREATE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -164,15 +170,29 @@
         <service android:name="es.juntadeandalucia.nube.files.services.FileUploader" />
         <service android:name="es.juntadeandalucia.nube.media.MediaService" />
 
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.PassCodeActivity" />
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.ConflictsResolveActivity"/>
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.GenericExplanationActivity"/>
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.ErrorsWhileCopyingHandlerActivity"/>
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.PassCodeActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.ConflictsResolveActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.GenericExplanationActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.ErrorsWhileCopyingHandlerActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
         
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.LogHistoryActivity"/>
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.LogHistoryActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
 
-        <activity android:name="es.juntadeandalucia.nube.ui.errorhandling.ErrorShowActivity" />
-        <activity android:name="es.juntadeandalucia.nube.ui.activity.UploadListActivity" />
+        <activity android:name="es.juntadeandalucia.nube.ui.errorhandling.ErrorShowActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
+        <activity android:name="es.juntadeandalucia.nube.ui.activity.UploadListActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden" />
         
         <receiver android:name="es.juntadeandalucia.nube.files.services.ConnectivityActionReceiver"
 		    android:enabled="true" android:label="ConnectivityActionReceiver">
@@ -207,16 +227,23 @@
 
         <activity
             android:name="es.juntadeandalucia.nube.ui.activity.CopyToClipboardActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:icon="@drawable/copy_link"
             android:label="@string/copy_link" />
         <activity
             android:name="es.juntadeandalucia.nube.ui.activity.FolderPickerActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name" />
         <activity
             android:name="es.juntadeandalucia.nube.ui.activity.UploadPathActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name" />
         <activity
             android:name="es.juntadeandalucia.nube.ui.activity.ShareActivity"
+            android:screenOrientation="portrait"
             android:label="@string/share_dialog_title"
             android:theme="@style/Theme.ownCloud.Dialog.NoTitle"
             android:launchMode="singleTop"
@@ -228,6 +255,8 @@
                        android:resource="@xml/users_and_groups_searchable"/>
         </activity>
         <activity android:name="es.juntadeandalucia.nube.ui.activity.ManageSpaceActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"
                   android:label="@string/manage_space_title"
                   android:theme="@style/Theme.ownCloud" />
     </application>

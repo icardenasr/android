@@ -410,4 +410,6 @@
   <string name="manage_space_error">No se han podido eliminar algunos archivos</string>
   <string name="permission_storage_access">Se requieren permisos adicionales para subir &amp; y descargar archivos.</string>
   <string name="local_file_not_found_toast">El archivo no se encuentra en el servidor local de archivos.</string>
+
+  <string name="terms_link_text">TÉRMINOS DE USO</string>
 </resources>

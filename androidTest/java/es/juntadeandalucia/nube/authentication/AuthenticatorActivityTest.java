@@ -112,9 +112,6 @@ public class AuthenticatorActivityTest {
         onView(ViewMatchers.withId(es.juntadeandalucia.nube.R.id.buttonOK))
                 .check(matches(not(isEnabled())));
 
-        // Type server url
-        onView(ViewMatchers.withId(es.juntadeandalucia.nube.R.id.hostUrlInput))
-                .perform(typeText(testServerURL), closeSoftKeyboard());
         onView(ViewMatchers.withId(es.juntadeandalucia.nube.R.id.account_username)).perform(click());
 
         // Type user
