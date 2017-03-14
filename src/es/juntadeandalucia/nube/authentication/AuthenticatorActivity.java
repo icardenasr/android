@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -63,6 +64,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import es.juntadeandalucia.nube.MainApp;
+import es.juntadeandalucia.nube.R;
 import es.juntadeandalucia.nube.lib.common.OwnCloudAccount;
 import es.juntadeandalucia.nube.lib.common.OwnCloudClientManagerFactory;
 import es.juntadeandalucia.nube.lib.common.OwnCloudCredentials;
@@ -93,9 +95,9 @@ import es.juntadeandalucia.nube.operations.DetectAuthenticationMethodOperation;
  * This Activity is used to add an ownCloud account to the App
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
-    implements  OnRemoteOperationListener, OnFocusChangeListener, OnEditorActionListener,
+        implements  OnRemoteOperationListener, OnFocusChangeListener, OnEditorActionListener,
     SsoWebViewClient.SsoWebViewClientListener, SslUntrustedCertDialog.OnSslUntrustedCertListener,
-    AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+        AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
 
     private static final String TAG = AuthenticatorActivity.class.getSimpleName();
 
@@ -134,7 +136,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private static final String KEY_USERNAME = "USERNAME";
     private static final String KEY_PASSWORD = "PASSWORD";
     private static final String KEY_ASYNC_TASK_IN_PROGRESS = "AUTH_IN_PROGRESS";
-
+    
     /// parameters from EXTRAs in starter Intent
     private byte mAction;
     private Account mAccount;
@@ -149,38 +151,58 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private Uri mNewCapturedUriFromOAuth2Redirection;
 
 
-    /// Server PRE-Fragment elements
+    /// Server PRE-Fragment elements 
+    private EditText mHostUrlInput;
+    private View mRefreshButton;
+    private TextView mServerStatusView;
+    
+    private TextWatcher mHostUrlInputWatcher;
+    private int mServerStatusText = 0, mServerStatusIcon = 0;
+    
+    private boolean mServerIsChecked = false;
+    private boolean mServerIsValid = false;
+    private boolean mPendingAutoCheck = false;
+
     private GetServerInfoOperation.ServerInfo mServerInfo =
-        new GetServerInfoOperation.ServerInfo();
-
-
+            new GetServerInfoOperation.ServerInfo();
+    
+    
     /// Authentication PRE-Fragment elements
+
+    private Typeface ngtFont;
+
+    private CheckBox mOAuth2Check;
+    private TextView mOAuthAuthEndpointText;
+    private TextView mOAuthTokenEndpointText;
     private EditText mUsernameInput;
     private EditText mPasswordInput;
-    private View mOkButton;
+    private android.support.v7.widget.AppCompatButton mOkButton;
     private TextView mAuthStatusView;
 
-    private int mAuthStatusText = 0, mAuthStatusIcon = 0;
+    private TextView mAppName;
+    private android.support.v7.widget.AppCompatButton mTermsLink;
 
+    private int mAuthStatusText = 0, mAuthStatusIcon = 0;
+    
     private String mAuthToken = "";
     private AuthenticatorAsyncTask mAsyncTask;
 
     private boolean mIsFirstAuthAttempt;
-
-    /// Identifier of operation in progress which result shouldn't be lost
+    
+    /// Identifier of operation in progress which result shouldn't be lost 
     private long mWaitingForOpId = Long.MAX_VALUE;
 
     private final String BASIC_TOKEN_TYPE = AccountTypeUtils.getAuthTokenTypePass(
-        MainApp.getAccountType());
+            MainApp.getAccountType());
     private final String OAUTH_TOKEN_TYPE = AccountTypeUtils.getAuthTokenTypeAccessToken(
-        MainApp.getAccountType());
+            MainApp.getAccountType());
     private final String SAML_TOKEN_TYPE =
-        AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType());
+            AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType());
 
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * IMPORTANT ENTRY POINT 1: activity is shown to the user
      */
     @Override
@@ -202,22 +224,22 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         // bind to Operations Service
         mOperationsServiceConnection = new OperationsServiceConnection();
-        if (!bindService(new Intent(this, OperationsService.class),
-            mOperationsServiceConnection,
-            Context.BIND_AUTO_CREATE)) {
-            Toast.makeText(this,
-                es.juntadeandalucia.nube.R.string.error_cant_bind_to_operations_service,
-                Toast.LENGTH_LONG)
-                .show();
+        if (!bindService(new Intent(this, OperationsService.class), 
+                mOperationsServiceConnection, 
+                Context.BIND_AUTO_CREATE)) {
+            Toast.makeText(this, 
+                    es.juntadeandalucia.nube.R.string.error_cant_bind_to_operations_service,
+                    Toast.LENGTH_LONG)
+                        .show();
             finish();
         }
 
         /// init activity state
         mAccountMgr = AccountManager.get(this);
         mNewCapturedUriFromOAuth2Redirection = null;
-
+        
         /// get input values
-        mAction = getIntent().getByteExtra(EXTRA_ACTION, ACTION_CREATE);
+        mAction = getIntent().getByteExtra(EXTRA_ACTION, ACTION_CREATE); 
         mAccount = getIntent().getExtras().getParcelable(EXTRA_ACCOUNT);
         if (savedInstanceState == null) {
             initAuthTokenType();
@@ -226,14 +248,20 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             mWaitingForOpId = savedInstanceState.getLong(KEY_WAITING_FOR_OP_ID);
             mIsFirstAuthAttempt = savedInstanceState.getBoolean(KEY_AUTH_IS_FIRST_ATTEMPT_TAG);
         }
-
+        
         /// load user interface
         setContentView(es.juntadeandalucia.nube.R.layout.account_setup);
+
+        ngtFont = Typeface.createFromAsset(getAssets(), "NewsGotT.ttf");
 
         /// initialize general UI elements
         initOverallUi();
 
-        mOkButton = findViewById(es.juntadeandalucia.nube.R.id.buttonOK);
+        mAppName = (TextView) findViewById(R.id.app_name);
+        mAppName.setTypeface(ngtFont);
+
+        mOkButton = (android.support.v7.widget.AppCompatButton) findViewById(es.juntadeandalucia.nube.R.id.buttonOK);
+        mOkButton.setTypeface(ngtFont);
         mOkButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -242,33 +270,60 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             }
         });
 
-        /// initialize block to be moved to single Fragment to check server and get info about it
-        initServerPreFragment(savedInstanceState);
+        mTermsLink = (android.support.v7.widget.AppCompatButton) findViewById(R.id.terms_link);
+        mTermsLink.setTypeface(ngtFont);
+        mTermsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.terms_url)));
+                startActivity(browserIntent);
+            }
+        });
 
-        /// initialize block to be moved to single Fragment to retrieve and validate credentials
+        /*findViewById(es.juntadeandalucia.nube.R.id.centeredRefreshButton).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                checkOcServer();
+            }
+        });*/
+
+        findViewById(es.juntadeandalucia.nube.R.id.embeddedRefreshButton).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                checkOcServer();
+            }
+        });
+
+
+        /// initialize block to be moved to single Fragment to check server and get info about it 
+        initServerPreFragment(savedInstanceState);
+        
+        /// initialize block to be moved to single Fragment to retrieve and validate credentials 
         initAuthorizationPreFragment(savedInstanceState);
 
         //Log_OC.wtf(TAG,  "onCreate end");
     }
 
     private void initAuthTokenType() {
-        mAuthTokenType =
-            getIntent().getExtras().getString(AccountAuthenticator.KEY_AUTH_TOKEN_TYPE);
+        mAuthTokenType = 
+                getIntent().getExtras().getString(AccountAuthenticator.KEY_AUTH_TOKEN_TYPE);
         if (mAuthTokenType == null) {
             if (mAccount != null) {
-                boolean oAuthRequired =
+                boolean oAuthRequired = 
                     (mAccountMgr.getUserData(mAccount, es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.Constants.KEY_SUPPORTS_OAUTH2) != null);
-                boolean samlWebSsoRequired = (
+                boolean samlWebSsoRequired = ( 
                     mAccountMgr.getUserData(
                         mAccount, es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.Constants.KEY_SUPPORTS_SAML_WEB_SSO
                     ) != null
                 );
                 mAuthTokenType = chooseAuthTokenType(oAuthRequired, samlWebSsoRequired);
-
+                
             } else {
                 boolean oAuthSupported = AUTH_ON.equals(getString(es.juntadeandalucia.nube.R.string.auth_method_oauth2));
-                boolean samlWebSsoSupported =
-                    AUTH_ON.equals(getString(es.juntadeandalucia.nube.R.string.auth_method_saml_web_sso));
+                boolean samlWebSsoSupported = 
+                        AUTH_ON.equals(getString(es.juntadeandalucia.nube.R.string.auth_method_saml_web_sso));
                 mAuthTokenType = chooseAuthTokenType(oAuthSupported, samlWebSsoSupported);
             }
         }
@@ -278,41 +333,49 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         if (saml) {
             return SAML_TOKEN_TYPE;
         } else if (oauth) {
-            return OAUTH_TOKEN_TYPE;
+             return OAUTH_TOKEN_TYPE;
         } else {
             return BASIC_TOKEN_TYPE;
         }
     }
 
-
+    
     /**
      * Configures elements in the user interface under direct control of the Activity.
      */
     private void initOverallUi() {
-
+        
         /// step 1 - load and process relevant inputs (resources, intent, savedInstanceState)
         boolean isWelcomeLinkVisible = getResources().getBoolean(es.juntadeandalucia.nube.R.bool.show_welcome_link);
-
-        String instructionsMessageText = null;
+        
+        String instructionsMessageText = null; 
         if (mAction == ACTION_UPDATE_EXPIRED_TOKEN) {
             if (AccountTypeUtils.getAuthTokenTypeAccessToken(MainApp.getAccountType())
-                .equals(mAuthTokenType)) {
+                    .equals(mAuthTokenType)) {
                 instructionsMessageText = getString(es.juntadeandalucia.nube.R.string.auth_expired_oauth_token_toast);
-
+                
             } else if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType())
-                .equals(mAuthTokenType)) {
+                    .equals(mAuthTokenType)) {
                 instructionsMessageText = getString(es.juntadeandalucia.nube.R.string.auth_expired_saml_sso_token_toast);
-
+                
             } else {
                 instructionsMessageText = getString(es.juntadeandalucia.nube.R.string.auth_expired_basic_auth_toast);
             }
         }
-
+        
+        /// step 2 - set properties of UI elements (text, visibility, enabled...)
+        TextView instructionsView = (TextView) findViewById(es.juntadeandalucia.nube.R.id.instructions_message);
+        if (instructionsMessageText != null) {
+            instructionsView.setVisibility(View.VISIBLE);
+            instructionsView.setText(instructionsMessageText);
+        } else {
+            instructionsView.setVisibility(View.GONE);
+        }
     }
 
 
     /**
-     *
+     * 
      * @param savedInstanceState        Saved activity state, as in {{@link #onCreate(Bundle)}
      */
     private void initServerPreFragment(Bundle savedInstanceState) {
@@ -331,6 +394,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 mServerInfo.mIsSslConn = mServerInfo.mBaseUrl.startsWith("https://");
             }
         } else {
+            mServerStatusText = savedInstanceState.getInt(KEY_SERVER_STATUS_TEXT);
+            mServerStatusIcon = savedInstanceState.getInt(KEY_SERVER_STATUS_ICON);
+            
+            mServerIsValid = savedInstanceState.getBoolean(KEY_SERVER_VALID);
+            mServerIsChecked = savedInstanceState.getBoolean(KEY_SERVER_CHECKED);
+            
             // TODO parcelable
             mServerInfo.mIsSslConn = savedInstanceState.getBoolean(KEY_IS_SSL_CONN);
             mServerInfo.mBaseUrl = savedInstanceState.getString(KEY_HOST_URL_TEXT);
@@ -339,23 +408,108 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 mServerInfo.mVersion = new OwnCloudVersion(ocVersion);
             }
             mServerInfo.mAuthMethod = DetectAuthenticationMethodOperation.AuthenticationMethod.valueOf(
-                savedInstanceState.getString(KEY_SERVER_AUTH_METHOD));
-
+                    savedInstanceState.getString(KEY_SERVER_AUTH_METHOD));
+            
         }
+        
+        /// step 2 - set properties of UI elements (text, visibility, enabled...)
+        mHostUrlInput = (EditText) findViewById(es.juntadeandalucia.nube.R.id.hostUrlInput);
+        // Convert IDN to Unicode
+        mHostUrlInput.setText(DisplayUtils.convertIdn(mServerInfo.mBaseUrl, false));
+        if (mAction != ACTION_CREATE) {
+            /// lock things that should not change
+            mHostUrlInput.setEnabled(false);
+            mHostUrlInput.setFocusable(false);
+        }
+        if (isUrlInputAllowed) {
+            if (mServerInfo.mBaseUrl.isEmpty()) {
+                checkHostUrl = false;
+            }
+            mRefreshButton = findViewById(es.juntadeandalucia.nube.R.id.embeddedRefreshButton);
+        } else {
+            findViewById(es.juntadeandalucia.nube.R.id.hostUrlFrame).setVisibility(View.GONE);
+            mRefreshButton = findViewById(es.juntadeandalucia.nube.R.id.centeredRefreshButton);
+        }
+        //showRefreshButton(mServerIsChecked && !mServerIsValid && mWaitingForOpId > Integer.MAX_VALUE);
+        showRefreshButton(false);
+        mServerStatusView = (TextView) findViewById(es.juntadeandalucia.nube.R.id.server_status_text);
+        mServerStatusView.setTypeface(ngtFont);
 
+        showServerStatus();
+        
+        /// step 3 - bind some listeners and options
+        mHostUrlInput.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        mHostUrlInput.setOnEditorActionListener(this);
+        
+        /// step 4 - create listeners that will be bound at onResume
+        mHostUrlInputWatcher = new TextWatcher() {
+            
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mOkButton.isEnabled() &&
+                        !mServerInfo.mBaseUrl.equals(
+                                normalizeUrl(s.toString(), mServerInfo.mIsSslConn))) {
+                    mOkButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (mAuthStatusIcon != 0) {
+                    Log_OC.d(TAG, "onTextChanged: hiding authentication status");
+                    mAuthStatusIcon = 0;
+                    mAuthStatusText = 0;
+                    showAuthStatus();
+                }
+            }
+        };
+
+
+        // TODO find out if this is really necessary, or if it can done in a different way
+        findViewById(es.juntadeandalucia.nube.R.id.scroll).setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (
+                            AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(
+                                    MainApp.getAccountType()
+                            ).equals(mAuthTokenType) &&
+                                    mHostUrlInput.hasFocus()
+                            ) {
+                        checkOcServer();
+                    }
+                }
+                return false;
+            }
+        });
+     
+        
+        /// step 4 - mark automatic check to be started when OperationsService is ready
+        mPendingAutoCheck = (savedInstanceState == null && 
+                (mAction != ACTION_CREATE || checkHostUrl));
     }
-
-
+    
+    
     /**
-     *
+     * 
      * @param savedInstanceState        Saved activity state, as in {{@link #onCreate(Bundle)}
      */
     private void initAuthorizationPreFragment(Bundle savedInstanceState) {
-
+        
         /// step 0 - get UI elements in layout
+        mOAuth2Check = (CheckBox) findViewById(es.juntadeandalucia.nube.R.id.oauth_onOff_check);
+        mOAuthAuthEndpointText = (TextView)findViewById(es.juntadeandalucia.nube.R.id.oAuthEntryPoint_1);
+        mOAuthTokenEndpointText = (TextView)findViewById(es.juntadeandalucia.nube.R.id.oAuthEntryPoint_2);
         mUsernameInput = (EditText) findViewById(es.juntadeandalucia.nube.R.id.account_username);
+        mUsernameInput.setTypeface(ngtFont);
         mPasswordInput = (EditText) findViewById(es.juntadeandalucia.nube.R.id.account_password);
+        mPasswordInput.setTypeface(ngtFont);
         mAuthStatusView = (TextView) findViewById(es.juntadeandalucia.nube.R.id.auth_status_text);
+        mAuthStatusView.setTypeface(ngtFont);
 
         /// step 1 - load and process relevant inputs (resources, intent, savedInstanceState)
         String presetUserName = null;
@@ -366,15 +520,18 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                     es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.
                         getUsernameForAccount(mAccount);
             }
-
+            
         } else {
             isPasswordExposed = savedInstanceState.getBoolean(KEY_PASSWORD_EXPOSED, false);
             mAuthStatusText = savedInstanceState.getInt(KEY_AUTH_STATUS_TEXT);
             mAuthStatusIcon = savedInstanceState.getInt(KEY_AUTH_STATUS_ICON);
             mAuthToken = savedInstanceState.getString(KEY_AUTH_TOKEN);
         }
-
+        
         /// step 2 - set properties of UI elements (text, visibility, enabled...)
+        mOAuth2Check.setChecked(
+                AccountTypeUtils.getAuthTokenTypeAccessToken(MainApp.getAccountType())
+                    .equals(mAuthTokenType));
         if (presetUserName != null) {
             mUsernameInput.setText(presetUserName);
         }
@@ -388,8 +545,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
         updateAuthenticationPreFragmentVisibility();
         showAuthStatus();
+        mOkButton.setEnabled(mServerIsValid);
 
-
+        
         /// step 3 - bind listeners
         // bindings for password input field
         mPasswordInput.setOnFocusChangeListener(this);
@@ -404,7 +562,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 return true;
             }
         });
-
+        
     }
 
 
@@ -414,32 +572,50 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     private void updateAuthenticationPreFragmentVisibility () {
         if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
-            equals(mAuthTokenType)) {
+                equals(mAuthTokenType)) {
             // SAML-based web Single Sign On
+            mOAuth2Check.setVisibility(View.GONE);
+            mOAuthAuthEndpointText.setVisibility(View.GONE);
+            mOAuthTokenEndpointText.setVisibility(View.GONE);
             mUsernameInput.setVisibility(View.GONE);
             mPasswordInput.setVisibility(View.GONE);
-
+            
         } else {
+            if (mAction == ACTION_CREATE && 
+                    AUTH_OPTIONAL.equals(getString(es.juntadeandalucia.nube.R.string.auth_method_oauth2))) {
+                mOAuth2Check.setVisibility(View.VISIBLE);
+            } else {
+                mOAuth2Check.setVisibility(View.GONE);
+            }
+            
             if (AccountTypeUtils.getAuthTokenTypeAccessToken(MainApp.getAccountType()).
-                equals(mAuthTokenType)) {
+                    equals(mAuthTokenType)) {
+                // OAuth 2 authorization
+                
+                mOAuthAuthEndpointText.setVisibility(View.VISIBLE);
+                mOAuthTokenEndpointText.setVisibility(View.VISIBLE);
                 mUsernameInput.setVisibility(View.GONE);
                 mPasswordInput.setVisibility(View.GONE);
-
+    
             } else {
                 // basic HTTP authorization
+                mOAuthAuthEndpointText.setVisibility(View.GONE);
+                mOAuthTokenEndpointText.setVisibility(View.GONE);
                 mUsernameInput.setVisibility(View.VISIBLE);
                 mPasswordInput.setVisibility(View.VISIBLE);
             }
         }
     }
 
+
+
     /**
      * Saves relevant state before {@link #onPause()}
-     *
-     * Do NOT save {@link #mNewCapturedUriFromOAuth2Redirection}; it keeps a temporal flag,
-     * intended to defer the processing of the redirection caught in
-     * {@link #onNewIntent(Intent)} until {@link #onResume()}
-     *
+     * 
+     * Do NOT save {@link #mNewCapturedUriFromOAuth2Redirection}; it keeps a temporal flag, 
+     * intended to defer the processing of the redirection caught in 
+     * {@link #onNewIntent(Intent)} until {@link #onResume()} 
+     * 
      * See {@link super#onSaveInstanceState(Bundle)}
      */
     @Override
@@ -452,6 +628,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         outState.putLong(KEY_WAITING_FOR_OP_ID, mWaitingForOpId);
 
         /// Server PRE-fragment state
+        outState.putInt(KEY_SERVER_STATUS_TEXT, mServerStatusText);
+        outState.putInt(KEY_SERVER_STATUS_ICON, mServerStatusIcon);
+        outState.putBoolean(KEY_SERVER_CHECKED, mServerIsChecked);
+        outState.putBoolean(KEY_SERVER_VALID, mServerIsValid);
         outState.putBoolean(KEY_IS_SSL_CONN, mServerInfo.mIsSslConn);
         outState.putString(KEY_HOST_URL_TEXT, mServerInfo.mBaseUrl);
         if (mServerInfo.mVersion != null) {
@@ -506,10 +686,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     }
 
     /**
-     * The redirection triggered by the OAuth authentication server as response to the
+     * The redirection triggered by the OAuth authentication server as response to the 
      * GET AUTHORIZATION request is caught here.
-     *
-     * To make this possible, this activity needs to be qualified with android:launchMode =
+     * 
+     * To make this possible, this activity needs to be qualified with android:launchMode = 
      * "singleTask" in the AndroidManifest.xml file.
      */
     @Override
@@ -523,36 +703,45 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     /**
-     * The redirection triggered by the OAuth authentication server as response to the
+     * The redirection triggered by the OAuth authentication server as response to the 
      * GET AUTHORIZATION, and deferred in {@link #onNewIntent(Intent)}, is processed here.
      */
     @Override
     protected void onResume() {
         super.onResume();
-
+        
         // bound here to avoid spurious changes triggered by Android on device rotations
+        mHostUrlInput.setOnFocusChangeListener(this);
+        mHostUrlInput.addTextChangedListener(mHostUrlInputWatcher);
+        
         if (mNewCapturedUriFromOAuth2Redirection != null) {
-            getOAuth2AccessTokenFromCapturedRedirection();
+            getOAuth2AccessTokenFromCapturedRedirection();            
         }
-
+        
         if (mOperationsServiceBinder != null) {
             doOnResumeAndBound();
         }
-
+        
     }
 
-
+    
     @Override
     protected void onPause() {
         if (mOperationsServiceBinder != null) {
             mOperationsServiceBinder.removeOperationListener(this);
         }
+        
+        mHostUrlInput.removeTextChangedListener(mHostUrlInputWatcher);
+        mHostUrlInput.setOnFocusChangeListener(null);
 
         super.onPause();
     }
-
+    
     @Override
     protected void onDestroy() {
+
+        mHostUrlInputWatcher = null;
+        
         if (mOperationsServiceConnection != null) {
             unbindService(mOperationsServiceConnection);
             mOperationsServiceBinder = null;
@@ -562,7 +751,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     /**
-     * Parses the redirection with the response to the GET AUTHORIZATION request to the
+     * Parses the redirection with the response to the GET AUTHORIZATION request to the 
      * oAuth server and requests for the access token (GET ACCESS TOKEN)
      */
     private void getOAuth2AccessTokenFromCapturedRedirection() {
@@ -572,17 +761,21 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         /// Showing the dialog with instructions for the user.
         IndeterminateProgressDialog dialog =
-            IndeterminateProgressDialog.newInstance(es.juntadeandalucia.nube.R.string.auth_getting_authorization, true);
+                IndeterminateProgressDialog.newInstance(es.juntadeandalucia.nube.R.string.auth_getting_authorization, true);
         dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
         /// GET ACCESS TOKEN to the oAuth server
         Intent getServerInfoIntent = new Intent();
         getServerInfoIntent.setAction(OperationsService.ACTION_OAUTH2_GET_ACCESS_TOKEN);
-
+        
         getServerInfoIntent.putExtra(
-            OperationsService.EXTRA_OAUTH2_QUERY_PARAMETERS,
-            queryParameters);
-
+                OperationsService.EXTRA_SERVER_URL, 
+                mOAuthTokenEndpointText.getText().toString().trim());
+        
+        getServerInfoIntent.putExtra(
+                OperationsService.EXTRA_OAUTH2_QUERY_PARAMETERS,
+                queryParameters);
+        
         if (mOperationsServiceBinder != null) {
             //Log_OC.wtf(TAG, "getting access token..." );
             mWaitingForOpId = mOperationsServiceBinder.queueNewOperation(getServerInfoIntent);
@@ -595,19 +788,91 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      * Handles the change of focus on the text inputs for the server URL and the password
      */
     public void onFocusChange(View view, boolean hasFocus) {
-        if (view.getId() == es.juntadeandalucia.nube.R.id.account_password) {
+        if (view.getId() == es.juntadeandalucia.nube.R.id.hostUrlInput) {
+            if (!hasFocus) {
+                onUrlInputFocusLost();
+            }
+            else {
+                showRefreshButton(false);
+            }
+
+        } else if (view.getId() == es.juntadeandalucia.nube.R.id.account_password) {
             onPasswordFocusChanged(hasFocus);
         }
     }
 
 
     /**
+     * Handles changes in focus on the text input for the server URL.
+     * 
+     * IMPORTANT ENTRY POINT 2: When (!hasFocus), user wrote the server URL and changed to 
+     * other field. The operation to check the existence of the server in the entered URL is
+     * started. 
+     * 
+     * When hasFocus:    user 'comes back' to write again the server URL.
+     */
+    private void onUrlInputFocusLost() {
+        if (!mServerInfo.mBaseUrl.equals(
+                normalizeUrl(mHostUrlInput.getText().toString(), mServerInfo.mIsSslConn))) {
+            // check server again only if the user changed something in the field
+            checkOcServer();
+        } else {
+            mOkButton.setEnabled(mServerIsValid);
+            //showRefreshButton(!mServerIsValid);
+            showRefreshButton(false);
+        }
+    }
+
+
+    private void checkOcServer() {
+        String uri = mHostUrlInput.getText().toString().trim();
+        mServerIsValid = false;
+        mServerIsChecked = false;
+        mOkButton.setEnabled(false);
+        mServerInfo = new GetServerInfoOperation.ServerInfo();
+        showRefreshButton(false);
+
+        if (uri.length() != 0) {
+            uri = stripIndexPhpOrAppsFiles(uri, mHostUrlInput);
+
+            // Handle internationalized domain names
+            try {
+                uri = DisplayUtils.convertIdn(uri, true);
+            } catch (IllegalArgumentException ex) {
+                // Let Owncloud library check the error of the malformed URI
+            }
+
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_testing_connection;
+            mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.progress_small;
+            showServerStatus();
+            
+            Intent getServerInfoIntent = new Intent();
+            getServerInfoIntent.setAction(OperationsService.ACTION_GET_SERVER_INFO);
+            getServerInfoIntent.putExtra(
+                    OperationsService.EXTRA_SERVER_URL,
+                    normalizeUrlSuffix(uri)
+            );
+            if (mOperationsServiceBinder != null) {
+                mWaitingForOpId = mOperationsServiceBinder.queueNewOperation(getServerInfoIntent);
+            } else {
+              Log_OC.wtf(TAG, "Server check tried with OperationService unbound!" );
+            }
+            
+        } else {
+            mServerStatusText = 0;
+            mServerStatusIcon = 0;
+            showServerStatus();
+        }
+    }
+
+
+    /**
      * Handles changes in focus on the text input for the password (basic authorization).
-     *
+     * 
      * When (hasFocus), the button to toggle password visibility is shown.
-     *
+     * 
      * When (!hasFocus), the button is made invisible and the password is hidden.
-     *
+     * 
      * @param hasFocus          'True' if focus is received, 'false' if is lost
      */
     private void onPasswordFocusChanged(boolean hasFocus) {
@@ -619,6 +884,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
     }
 
+
     private void showViewPasswordButton() {
         int drawable = es.juntadeandalucia.nube.R.drawable.ic_view;
         if (isPasswordVisible()) {
@@ -628,8 +894,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     }
 
     private boolean isPasswordVisible() {
-        return ((mPasswordInput.getInputType() & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) ==
-            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        return ((mPasswordInput.getInputType() & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == 
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
 
     private void hidePasswordButton() {
@@ -638,14 +904,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     private void showPassword() {
         mPasswordInput.setInputType(
-            InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         );
         showViewPasswordButton();
     }
 
     private void hidePassword() {
         mPasswordInput.setInputType(
-            InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
         );
         showViewPasswordButton();
     }
@@ -653,28 +919,35 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     /**
      * Checks the credentials of the user in the root of the ownCloud server
      * before creating a new local account.
-     *
+     * 
      * For basic authorization, a check of existence of the root folder is
      * performed.
-     *
-     * For OAuth, starts the flow to get an access token; the credentials test
+     * 
+     * For OAuth, starts the flow to get an access token; the credentials test 
      * is postponed until it is available.
-     *
+     * 
      * IMPORTANT ENTRY POINT 4
      */
     public void onOkClick() {
         // this check should be unnecessary
-        if (mServerInfo.mVersion == null ||
-            !mServerInfo.mVersion.isVersionValid()  ||
-            mServerInfo.mBaseUrl == null ||
-            mServerInfo.mBaseUrl.length() == 0) {
+        if (mServerInfo.mVersion == null || 
+                !mServerInfo.mVersion.isVersionValid()  || 
+                mServerInfo.mBaseUrl == null || 
+                mServerInfo.mBaseUrl.length() == 0) {
+            mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.common_error;
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_wtf_reenter_URL;
+            showServerStatus();
             mOkButton.setEnabled(false);
             return;
         }
 
-        if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
-            equals(mAuthTokenType)) {
-
+        if (AccountTypeUtils.getAuthTokenTypeAccessToken(MainApp.getAccountType()).
+                equals(mAuthTokenType)) {
+            
+            startOauthorization();
+        } else if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
+                equals(mAuthTokenType)) {
+            
             startSamlBasedFederatedSingleSignOnAuthorization();
         } else {
             checkBasicAuthorization();
@@ -684,7 +957,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     /**
-     * Tests the credentials entered by the user performing a check of existence on
+     * Tests the credentials entered by the user performing a check of existence on 
      * the root folder of the ownCloud server.
      */
     private void checkBasicAuthorization() {
@@ -693,13 +966,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         String password = mPasswordInput.getText().toString();
 
         /// be gentle with the user
-        IndeterminateProgressDialog dialog =
-            IndeterminateProgressDialog.newInstance(es.juntadeandalucia.nube.R.string.auth_trying_to_login, true);
+        IndeterminateProgressDialog dialog = 
+                IndeterminateProgressDialog.newInstance(es.juntadeandalucia.nube.R.string.auth_trying_to_login, true);
         dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
         /// validate credentials accessing the root folder
         OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(username,
-            password);
+                password);
         accessRootFolder(credentials);
     }
 
@@ -707,6 +980,38 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mAsyncTask = new AuthenticatorAsyncTask(this);
         Object[] params = { mServerInfo.mBaseUrl, credentials };
         mAsyncTask.execute(params);
+    }
+
+
+    /**
+     * Starts the OAuth 'grant type' flow to get an access token, with 
+     * a GET AUTHORIZATION request to the BUILT-IN authorization server. 
+     */
+    private void startOauthorization() {
+        // be gentle with the user
+        mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.progress_small;
+        mAuthStatusText = es.juntadeandalucia.nube.R.string.oauth_login_connection;
+        showAuthStatus();
+
+        // GET AUTHORIZATION request
+        Uri uri = Uri.parse(mOAuthAuthEndpointText.getText().toString().trim());
+        Uri.Builder uriBuilder = uri.buildUpon();
+        uriBuilder.appendQueryParameter(
+                OAuth2Constants.KEY_RESPONSE_TYPE, getString(es.juntadeandalucia.nube.R.string.oauth2_response_type)
+        );
+        uriBuilder.appendQueryParameter(
+                OAuth2Constants.KEY_REDIRECT_URI, getString(es.juntadeandalucia.nube.R.string.oauth2_redirect_uri)
+        );   
+        uriBuilder.appendQueryParameter(
+                OAuth2Constants.KEY_CLIENT_ID, getString(es.juntadeandalucia.nube.R.string.oauth2_client_id)
+        );
+        uriBuilder.appendQueryParameter(
+                OAuth2Constants.KEY_SCOPE, getString(es.juntadeandalucia.nube.R.string.oauth2_scope)
+        );
+        uri = uriBuilder.build();
+        Log_OC.d(TAG, "Starting browser to view " + uri.toString());
+        Intent i = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(i);
     }
 
 
@@ -722,20 +1027,26 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         /// Show SAML-based SSO web dialog
         String targetUrl = mServerInfo.mBaseUrl
-            + AccountUtils.getWebdavPath(mServerInfo.mVersion, mAuthTokenType);
+                + AccountUtils.getWebdavPath(mServerInfo.mVersion, mAuthTokenType);
         SamlWebViewDialog dialog = SamlWebViewDialog.newInstance(targetUrl, targetUrl);
         dialog.show(getSupportFragmentManager(), SAML_DIALOG_TAG);
     }
 
     /**
      * Callback method invoked when a RemoteOperation executed by this Activity finishes.
-     *
+     * 
      * Dispatches the operation flow to the right method.
      */
     @Override
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
 
-        if (operation instanceof OAuth2GetAccessToken) {
+        if (operation instanceof GetServerInfoOperation) {
+            if (operation.hashCode() == mWaitingForOpId) {
+                onGetServerInfoFinish(result);
+            }   // else nothing ; only the last check operation is considered; 
+                // multiple can be started if the user amends a URL quickly
+
+        } else if (operation instanceof OAuth2GetAccessToken) {
             onGetOAuthAccessTokenFinish(result);
 
         } else if (operation instanceof GetRemoteUserNameOperation) {
@@ -770,7 +1081,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                     } catch (es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
                         Log_OC.e(TAG, "Account " + mAccount + " was removed!", e);
                         Toast.makeText(this, es.juntadeandalucia.nube.R.string.auth_account_does_not_exist,
-                            Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }
@@ -786,91 +1097,273 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     }
 
+    /**
+     * Processes the result of the server check performed when the user finishes the enter of the
+     * server URL.
+     *
+     * @param result        Result of the check.
+     */
+    private void onGetServerInfoFinish(RemoteOperationResult result) {
+        /// update activity state
+        mServerIsChecked = true;
+        mWaitingForOpId = Long.MAX_VALUE;
+        
+        // update server status, but don't show it yet
+        updateServerStatusIconAndText(result);
+
+        if (result.isSuccess()) {
+            /// SUCCESS means:
+            //      1. connection succeeded, and we know if it's SSL or not
+            //      2. server is installed
+            //      3. we got the server version
+            //      4. we got the authentication method required by the server 
+            mServerInfo = (GetServerInfoOperation.ServerInfo) (result.getData().get(0));
+            
+            if (!authSupported(mServerInfo.mAuthMethod)) {
+                
+                updateServerStatusIconNoRegularAuth();  // overrides updateServerStatusIconAndText()  
+                mServerIsValid = false;
+
+            } else {
+                mServerIsValid = true;
+            }
+            
+        } else {
+            mServerIsValid = false;
+        }
+
+        // refresh UI
+        //showRefreshButton(!mServerIsValid);
+        showRefreshButton(false);
+        showServerStatus();
+        mOkButton.setEnabled(mServerIsValid);
+        
+        /// very special case (TODO: move to a common place for all the remote operations)
+        if (result.getCode() == RemoteOperationResult.ResultCode.SSL_RECOVERABLE_PEER_UNVERIFIED) {
+            showUntrustedCertDialog(result);
+        }
+    }
+
+
     private boolean authSupported(DetectAuthenticationMethodOperation.AuthenticationMethod authMethod) {
         return (( BASIC_TOKEN_TYPE.equals(mAuthTokenType) &&
-            DetectAuthenticationMethodOperation.AuthenticationMethod.BASIC_HTTP_AUTH.equals(authMethod) ) ||
-            ( OAUTH_TOKEN_TYPE.equals(mAuthTokenType) &&
-                DetectAuthenticationMethodOperation.AuthenticationMethod.BEARER_TOKEN.equals(authMethod)) ||
-            ( SAML_TOKEN_TYPE.equals(mAuthTokenType)  &&
-                DetectAuthenticationMethodOperation.AuthenticationMethod.SAML_WEB_SSO.equals(authMethod))
+                    DetectAuthenticationMethodOperation.AuthenticationMethod.BASIC_HTTP_AUTH.equals(authMethod) ) ||
+                ( OAUTH_TOKEN_TYPE.equals(mAuthTokenType) &&
+                    DetectAuthenticationMethodOperation.AuthenticationMethod.BEARER_TOKEN.equals(authMethod)) ||
+                ( SAML_TOKEN_TYPE.equals(mAuthTokenType)  &&
+                    DetectAuthenticationMethodOperation.AuthenticationMethod.SAML_WEB_SSO.equals(authMethod))
         );
+    }
+
+
+    // TODO remove, if possible
+    private String normalizeUrl(String url, boolean sslWhenUnprefixed) {
+        if (url != null && url.length() > 0) {
+            url = url.trim();
+            if (!url.toLowerCase().startsWith("http://") &&
+                    !url.toLowerCase().startsWith("https://")) {
+                if (sslWhenUnprefixed) {
+                    url = "https://" + url;
+                } else {
+                    url = "http://" + url;
+                }
+            }
+
+            url = normalizeUrlSuffix(url);
+        }
+        return (url != null ? url : "");
+    }
+    
+    
+    private String normalizeUrlSuffix(String url) {
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        url = trimUrlWebdav(url);
+        return url;
+    }
+
+    private String stripIndexPhpOrAppsFiles(String url, EditText mHostUrlInput) {
+        if (url.endsWith("/index.php")) {
+            url = url.substring(0, url.lastIndexOf("/index.php"));
+            mHostUrlInput.setText(url);
+        } else if (url.contains("/index.php/apps/")) {
+            url = url.substring(0, url.lastIndexOf("/index.php/apps/"));
+            mHostUrlInput.setText(url);
+        }
+
+        return url;
+    }
+
+    // TODO remove, if possible
+    private String trimUrlWebdav(String url){       
+        if(url.toLowerCase().endsWith(AccountUtils.WEBDAV_PATH_4_0_AND_LATER)){
+            url = url.substring(0, url.length() - AccountUtils.WEBDAV_PATH_4_0_AND_LATER.length());
+        }
+        return url;
     }
 
 
     /**
      * Chooses the right icon and text to show to the user for the received operation result.
-     *
+     * 
+     * @param result    Result of a remote operation performed in this activity
+     */
+    private void updateServerStatusIconAndText(RemoteOperationResult result) {
+        mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.common_error;    // the most common case in the switch below
+
+        switch (result.getCode()) {
+        case OK_SSL:
+            mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_lock;
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_secure_connection;
+            break;
+
+        case OK_NO_SSL:
+        case OK:
+            if (mHostUrlInput.getText().toString().trim().toLowerCase().startsWith("http://") ) {
+                mServerStatusText = es.juntadeandalucia.nube.R.string.auth_connection_established;
+                mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_ok;
+            } else {
+                mServerStatusText = es.juntadeandalucia.nube.R.string.auth_nossl_plain_ok_title;
+                mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_lock_open;
+            }
+            break;
+
+        case NO_NETWORK_CONNECTION:
+            mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.no_network;
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_no_net_conn_title;
+            break;
+
+        case SSL_RECOVERABLE_PEER_UNVERIFIED:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_ssl_unverified_server_title;
+            break;
+        case BAD_OC_VERSION:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_bad_oc_version_title;
+            break;
+        case WRONG_CONNECTION:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_wrong_connection_title;
+            break;
+        case TIMEOUT:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_timeout_title;
+            break;
+        case INCORRECT_ADDRESS:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_incorrect_address_title;
+            break;
+        case SSL_ERROR:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_ssl_general_error_title;
+            break;
+        case UNAUTHORIZED:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_unauthorized;
+            break;
+        case HOST_NOT_AVAILABLE:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_unknown_host_title;
+            break;
+        case INSTANCE_NOT_CONFIGURED:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_not_configured_title;
+            break;
+        case FILE_NOT_FOUND:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_incorrect_path_title;
+            break;
+        case OAUTH2_ERROR:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_oauth_error;
+            break;
+        case OAUTH2_ERROR_ACCESS_DENIED:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_oauth_error_access_denied;
+            break;
+        case UNHANDLED_HTTP_CODE:
+        case UNKNOWN_ERROR:
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_unknown_error_title;
+            break;
+        case OK_REDIRECT_TO_NON_SECURE_CONNECTION:
+            mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_lock_open;
+            mServerStatusText = es.juntadeandalucia.nube.R.string.auth_redirect_non_secure_connection_title;
+            break;
+        default:
+            mServerStatusText = 0;
+            mServerStatusIcon = 0;
+        }
+    }
+
+
+    /**
+     * Chooses the right icon and text to show to the user for the received operation result.
+     * 
      * @param result    Result of a remote operation performed in this activity
      */
     private void updateAuthStatusIconAndText(RemoteOperationResult result) {
         mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.common_error;    // the most common case in the switch below
 
         switch (result.getCode()) {
-            case OK_SSL:
-                mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_lock;
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_secure_connection;
-                break;
+        case OK_SSL:
+            mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_lock;
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_secure_connection;
+            break;
 
-            case OK_NO_SSL:
-            case OK:
+        case OK_NO_SSL:
+        case OK:
+            if (mHostUrlInput.getText().toString().trim().toLowerCase().startsWith("http://") ) {
                 mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_connection_established;
                 mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_ok;
-                break;
+            } else {
+                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_nossl_plain_ok_title;
+                mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.ic_lock_open;
+            }
+            break;
 
-            case NO_NETWORK_CONNECTION:
-                mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.no_network;
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_no_net_conn_title;
-                break;
+        case NO_NETWORK_CONNECTION:
+            mAuthStatusIcon = es.juntadeandalucia.nube.R.drawable.no_network;
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_no_net_conn_title;
+            break;
 
-            case SSL_RECOVERABLE_PEER_UNVERIFIED:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_ssl_unverified_server_title;
-                break;
-            case BAD_OC_VERSION:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_bad_oc_version_title;
-                break;
-            case WRONG_CONNECTION:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_wrong_connection_title;
-                break;
-            case TIMEOUT:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_timeout_title;
-                break;
-            case INCORRECT_ADDRESS:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_incorrect_address_title;
-                break;
-            case SSL_ERROR:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_ssl_general_error_title;
-                break;
-            case UNAUTHORIZED:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_unauthorized;
-                break;
-            case HOST_NOT_AVAILABLE:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_unknown_host_title;
-                break;
-            case INSTANCE_NOT_CONFIGURED:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_not_configured_title;
-                break;
-            case FILE_NOT_FOUND:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_incorrect_path_title;
-                break;
-            case OAUTH2_ERROR:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_oauth_error;
-                break;
-            case OAUTH2_ERROR_ACCESS_DENIED:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_oauth_error_access_denied;
-                break;
-            case ACCOUNT_NOT_NEW:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_account_not_new;
-                break;
-            case ACCOUNT_NOT_THE_SAME:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_account_not_the_same;
-                break;
-            case UNHANDLED_HTTP_CODE:
-            case UNKNOWN_ERROR:
-                mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_unknown_error_title;
-                break;
-            default:
-                mAuthStatusText = 0;
-                mAuthStatusIcon = 0;
+        case SSL_RECOVERABLE_PEER_UNVERIFIED:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_ssl_unverified_server_title;
+            break;
+        case BAD_OC_VERSION:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_bad_oc_version_title;
+            break;
+        case WRONG_CONNECTION:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_wrong_connection_title;
+            break;
+        case TIMEOUT:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_timeout_title;
+            break;
+        case INCORRECT_ADDRESS:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_incorrect_address_title;
+            break;
+        case SSL_ERROR:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_ssl_general_error_title;
+            break;
+        case UNAUTHORIZED:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_unauthorized;
+            break;
+        case HOST_NOT_AVAILABLE:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_unknown_host_title;
+            break;
+        case INSTANCE_NOT_CONFIGURED:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_not_configured_title;
+            break;
+        case FILE_NOT_FOUND:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_incorrect_path_title;
+            break;
+        case OAUTH2_ERROR:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_oauth_error;
+            break;
+        case OAUTH2_ERROR_ACCESS_DENIED:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_oauth_error_access_denied;
+            break;
+        case ACCOUNT_NOT_NEW:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_account_not_new;
+            break;
+        case ACCOUNT_NOT_THE_SAME:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_account_not_the_same;
+            break;
+        case UNHANDLED_HTTP_CODE:
+        case UNKNOWN_ERROR:
+            mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_unknown_error_title;
+            break;
+        default:
+            mAuthStatusText = 0;
+            mAuthStatusIcon = 0;
         }
     }
 
@@ -880,10 +1373,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mAuthStatusText = es.juntadeandalucia.nube.R.string.auth_fail_get_user_name;
     }
 
+    private void updateServerStatusIconNoRegularAuth(){
+        mServerStatusIcon = es.juntadeandalucia.nube.R.drawable.common_error;
+        mServerStatusText = es.juntadeandalucia.nube.R.string.auth_can_not_auth_against_server;
+    }
+
     /**
-     * Processes the result of the request for and access token send
+     * Processes the result of the request for and access token send 
      * to an OAuth authorization server.
-     *
+     * 
      * @param result        Result of the operation.
      */
     private void onGetOAuthAccessTokenFinish(RemoteOperationResult result) {
@@ -892,8 +1390,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         if (result.isSuccess()) {
             /// be gentle with the user
-            IndeterminateProgressDialog dialog =
-                IndeterminateProgressDialog.newInstance(es.juntadeandalucia.nube.R.string.auth_trying_to_login, true);
+            IndeterminateProgressDialog dialog = 
+                    IndeterminateProgressDialog.newInstance(es.juntadeandalucia.nube.R.string.auth_trying_to_login, true);
             dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
             /// time to test the retrieved access token on the ownCloud server
@@ -904,7 +1402,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
             /// validate token accessing to root folder / getting session
             OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBearerCredentials(
-                mAuthToken);
+                    mAuthToken);
             accessRootFolder(credentials);
 
         } else {
@@ -917,7 +1415,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     /**
      * Processes the result of the access check performed to try the user credentials.
-     *
+     * 
      * Creates a new account through the AccountManager.
      *
      * @param result        Result of the operation.
@@ -944,7 +1442,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 } catch (es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
                     Log_OC.e(TAG, "Account " + mAccount + " was removed!", e);
                     Toast.makeText(this, es.juntadeandalucia.nube.R.string.auth_account_does_not_exist,
-                        Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -952,18 +1450,24 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             if (success) {
                 finish();
             }
-
+            
         } else if (result.isServerFail() || result.isException()) {
-            /// server errors or exceptions in authorization take to requiring a new check of
+            /// server errors or exceptions in authorization take to requiring a new check of 
             /// the server
-            mServerInfo = new GetServerInfoOperation.ServerInfo();
+            mServerIsChecked = true;
+            mServerIsValid = false;
+            mServerInfo = new GetServerInfoOperation.ServerInfo();  
 
             // update status icon and text
+            updateServerStatusIconAndText(result);
+            showServerStatus();
             mAuthStatusIcon = 0;
             mAuthStatusText = 0;
             showAuthStatus();
 
             // update input controls state
+            //showRefreshButton(true);
+            showRefreshButton(false);
             mOkButton.setEnabled(false);
 
             // very special case (TODO: move to a common place for all the remote operations)
@@ -993,23 +1497,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private void updateAccountAuthentication() throws es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.AccountNotFoundException {
 
 
-
+        
         Bundle response = new Bundle();
         response.putString(AccountManager.KEY_ACCOUNT_NAME, mAccount.name);
         response.putString(AccountManager.KEY_ACCOUNT_TYPE, mAccount.type);
 
         if (AccountTypeUtils.getAuthTokenTypeAccessToken(MainApp.getAccountType()).
-            equals(mAuthTokenType)) {
+                equals(mAuthTokenType)) {
             response.putString(AccountManager.KEY_AUTHTOKEN, mAuthToken);
-            // the next line is necessary, notifications are calling directly to the
+            // the next line is necessary, notifications are calling directly to the 
             // AuthenticatorActivity to update, without AccountManager intervention
             mAccountMgr.setAuthToken(mAccount, mAuthTokenType, mAuthToken);
 
         } else if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
-            equals(mAuthTokenType)) {
+                equals(mAuthTokenType)) {
 
             response.putString(AccountManager.KEY_AUTHTOKEN, mAuthToken);
-            // the next line is necessary; by now, notifications are calling directly to the
+            // the next line is necessary; by now, notifications are calling directly to the 
             // AuthenticatorActivity to update, without AccountManager intervention
             mAccountMgr.setAuthToken(mAccount, mAuthTokenType, mAuthToken);
 
@@ -1031,18 +1535,18 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     /**
-     * Creates a new account through the Account Authenticator that started this activity.
-     *
+     * Creates a new account through the Account Authenticator that started this activity. 
+     * 
      * This makes the account permanent.
-     *
+     * 
      * TODO Decide how to name the OAuth accounts
      */
     private boolean createAccount(RemoteOperationResult authResult) {
         /// create and save new ownCloud account
         boolean isOAuth = AccountTypeUtils.
-            getAuthTokenTypeAccessToken(MainApp.getAccountType()).equals(mAuthTokenType);
+                getAuthTokenTypeAccessToken(MainApp.getAccountType()).equals(mAuthTokenType);
         boolean isSaml =  AccountTypeUtils.
-            getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).equals(mAuthTokenType);
+                getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).equals(mAuthTokenType);
 
         String lastPermanentLocation = authResult.getLastPermanentLocation();
         if (lastPermanentLocation != null) {
@@ -1055,7 +1559,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             username = "OAuth_user" + (new java.util.Random(System.currentTimeMillis())).nextLong();
         }
         String accountName = es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.
-            buildAccountName(uri, username);
+                buildAccountName(uri, username);
         Account newAccount = new Account(accountName, MainApp.getAccountType());
         if (AccountUtils.exists(newAccount, getApplicationContext())) {
             // fail - not a new account, but an existing one; disallow
@@ -1067,13 +1571,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         } else {
             mAccount = newAccount;
-
+            
             if (isOAuth || isSaml) {
                 // with external authorizations, the password is never input in the app
-                mAccountMgr.addAccountExplicitly(mAccount, "", null);
+                mAccountMgr.addAccountExplicitly(mAccount, "", null);  
             } else {
                 mAccountMgr.addAccountExplicitly(
-                    mAccount, mPasswordInput.getText().toString(), null
+                        mAccount, mPasswordInput.getText().toString(), null
                 );
             }
 
@@ -1088,28 +1592,28 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             Account defaultAccount = AccountUtils.getCurrentOwnCloudAccount(this);
             if (defaultAccount == null) {
                 SharedPreferences.Editor editor = PreferenceManager
-                    .getDefaultSharedPreferences(this).edit();
+                        .getDefaultSharedPreferences(this).edit();
                 editor.putString("select_oc_account", accountName);
                 editor.commit();
             }
 
             /// prepare result to return to the Authenticator
-            //  TODO check again what the Authenticator makes with it; probably has the same
+            //  TODO check again what the Authenticator makes with it; probably has the same 
             //  effect as addAccountExplicitly, but it's not well done
-            final Intent intent = new Intent();
+            final Intent intent = new Intent();       
             intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE,    MainApp.getAccountType());
             intent.putExtra(AccountManager.KEY_ACCOUNT_NAME,    mAccount.name);
             intent.putExtra(AccountManager.KEY_USERDATA,        username);
             if (isOAuth || isSaml) {
                 mAccountMgr.setAuthToken(mAccount, mAuthTokenType, mAuthToken);
             }
-            /// add user data to the new account; TODO probably can be done in the last parameter
+            /// add user data to the new account; TODO probably can be done in the last parameter 
             //      addAccountExplicitly, or in KEY_USERDATA
             mAccountMgr.setUserData(
-                mAccount, es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION, mServerInfo.mVersion.getVersion()
+                    mAccount, es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION, mServerInfo.mVersion.getVersion()
             );
             mAccountMgr.setUserData(
-                mAccount, es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
+                    mAccount, es.juntadeandalucia.nube.lib.common.accounts.AccountUtils.Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
             );
 
             if (isSaml) {
@@ -1128,15 +1632,32 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     /**
      * Starts and activity to open the 'new account' page in the ownCloud web site
-     *
+     * 
      * @param view      'Account register' button
      */
     public void onRegisterClick(View view) {
         Intent register = new Intent(
-            Intent.ACTION_VIEW, Uri.parse(getString(es.juntadeandalucia.nube.R.string.welcome_link_url))
+                Intent.ACTION_VIEW, Uri.parse(getString(es.juntadeandalucia.nube.R.string.welcome_link_url))
         );
         setResult(RESULT_CANCELED);
         startActivity(register);
+    }
+
+
+    /**
+     * Updates the content and visibility state of the icon and text associated
+     * to the last check on the ownCloud server.
+     *
+     */
+    private void showServerStatus() {
+        if (mServerStatusIcon == 0 && mServerStatusText == 0) {
+            mServerStatusView.setVisibility(View.INVISIBLE);
+        } else {
+            mServerStatusView.setText(mServerStatusText);
+            mServerStatusView.setCompoundDrawablesWithIntrinsicBounds(mServerStatusIcon, 0, 0, 0);
+            mServerStatusView.setVisibility(View.VISIBLE);
+        }
+
     }
 
 
@@ -1153,13 +1674,21 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             mAuthStatusView.setCompoundDrawablesWithIntrinsicBounds(mAuthStatusIcon, 0, 0, 0);
             mAuthStatusView.setVisibility(View.VISIBLE);
         }
-    }
+    }     
 
+
+    private void showRefreshButton (boolean show) {
+        if (show)  {
+            mRefreshButton.setVisibility(View.VISIBLE);
+        } else {
+            mRefreshButton.setVisibility(View.GONE);
+        }
+    }
 
     /**
      * Called when the eye icon in the password field is clicked.
-     *
-     * Toggles the visibility of the password in the field.
+     * 
+     * Toggles the visibility of the password in the field. 
      */
     public void onViewPasswordClick() {
         int selectionStart = mPasswordInput.getSelectionStart();
@@ -1170,14 +1699,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             showPassword();
         }
         mPasswordInput.setSelection(selectionStart, selectionEnd);
-    }
+    }    
 
 
     /**
      * Called when the checkbox for OAuth authorization is clicked.
-     *
-     * Hides or shows the input fields for user & password.
-     *
+     * 
+     * Hides or shows the input fields for user & password. 
+     * 
      * @param view      'View password' 'button'
      */
     public void onCheckClick(View view) {
@@ -1193,18 +1722,24 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     /**
      *  Called when the 'action' button in an IME is pressed ('enter' in software keyboard).
-     *
-     *  Used to trigger the authentication check when the user presses 'enter' after writing the
+     * 
+     *  Used to trigger the authentication check when the user presses 'enter' after writing the 
      *  password, or to throw the server test when the only field on screen is the URL input field.
      */
     @Override
     public boolean onEditorAction(TextView inputField, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_DONE && inputField != null &&
-            inputField.equals(mPasswordInput)) {
+        if (actionId == EditorInfo.IME_ACTION_DONE && inputField != null && 
+                inputField.equals(mPasswordInput)) {
             if (mOkButton.isEnabled()) {
                 mOkButton.performClick();
             }
 
+        } else if (actionId == EditorInfo.IME_ACTION_NEXT && inputField != null && 
+                inputField.equals(mHostUrlInput)) {
+            if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
+                    equals(mAuthTokenType)) {
+                checkOcServer();
+            }
         }
         return false;   // always return false to grant that the software keyboard is hidden anyway
     }
@@ -1230,10 +1765,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 final int x = (int) event.getX();
                 final int y = (int) event.getY();
                 final Rect bounds = rightDrawable.getBounds();
-                if (    x >= (view.getRight() - bounds.width() - fuzz) &&
-                    x <= (view.getRight() - view.getPaddingRight() + fuzz) &&
-                    y >= (view.getPaddingTop() - fuzz) &&
-                    y <= (view.getHeight() - view.getPaddingBottom()) + fuzz) {
+                if (    x >= (view.getRight() - bounds.width() - fuzz) && 
+                        x <= (view.getRight() - view.getPaddingRight() + fuzz) && 
+                        y >= (view.getPaddingTop() - fuzz) &&
+                        y <= (view.getHeight() - view.getPaddingBottom()) + fuzz) {
 
                     return onDrawableTouch(event);
                 }
@@ -1246,12 +1781,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     private void getRemoteUserNameOperation(String sessionCookie) {
-
+        
         Intent getUserNameIntent = new Intent();
         getUserNameIntent.setAction(OperationsService.ACTION_GET_USER_NAME);
         getUserNameIntent.putExtra(OperationsService.EXTRA_SERVER_URL, mServerInfo.mBaseUrl);
         getUserNameIntent.putExtra(OperationsService.EXTRA_COOKIE, sessionCookie);
-
+        
         if (mOperationsServiceBinder != null) {
             mWaitingForOpId = mOperationsServiceBinder.queueNewOperation(getUserNameIntent);
         }
@@ -1272,7 +1807,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 }
             }
 
-        } else {
+        } else { 
             // TODO - show fail
             Log_OC.d(TAG, "SSO failed");
         }
@@ -1281,24 +1816,28 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
+                equals(mAuthTokenType) &&
+                mHostUrlInput.hasFocus() && event.getAction() == MotionEvent.ACTION_DOWN) {
+            checkOcServer();
+        }
         return super.onTouchEvent(event);
     }
 
 
     /**
-     * Show untrusted cert dialog
+     * Show untrusted cert dialog 
      */
     public void showUntrustedCertDialog(
-        X509Certificate x509Certificate, SslError error, SslErrorHandler handler
-    ) {
+            X509Certificate x509Certificate, SslError error, SslErrorHandler handler
+        ) {
         // Show a dialog with the certificate info
         SslUntrustedCertDialog dialog;
         if (x509Certificate == null) {
             dialog = SslUntrustedCertDialog.newInstanceForEmptySslError(error, handler);
         } else {
             dialog = SslUntrustedCertDialog.
-                newInstanceForFullSslError(x509Certificate, error, handler);
+                    newInstanceForFullSslError(x509Certificate, error, handler);
         }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -1308,12 +1847,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     /**
-     * Show untrusted cert dialog
+     * Show untrusted cert dialog 
      */
     private void showUntrustedCertDialog(RemoteOperationResult result) {
         // Show a dialog with the certificate info
         SslUntrustedCertDialog dialog = SslUntrustedCertDialog.
-            newInstanceForFullSslError((CertificateCombinedException)result.getException());
+                newInstanceForFullSslError((CertificateCombinedException)result.getException());
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.addToBackStack(null);
@@ -1326,11 +1865,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     public void onSavedCertificate() {
         Fragment fd = getSupportFragmentManager().findFragmentByTag(SAML_DIALOG_TAG);
-
+        if (fd == null) {
+            // if SAML dialog is not shown, 
+            // the SslDialog was shown due to an SSL error in the server check
+            checkOcServer();
+        }
     }
 
     /**
-     * Called from SslValidatorDialog when a new server certificate could not be saved
+     * Called from SslValidatorDialog when a new server certificate could not be saved 
      * when the user requested it.
      */
     @Override
@@ -1351,10 +1894,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         if (mWaitingForOpId <= Integer.MAX_VALUE) {
             mOperationsServiceBinder.dispatchResultIfFinished((int)mWaitingForOpId, this);
         }
-
+        
+        if (mPendingAutoCheck) {
+            checkOcServer();
+        }
     }
 
-
+    
     private void dismissDialog(String dialogTag){
         Fragment frag = getSupportFragmentManager().findFragmentByTag(dialogTag);
         if (frag != null && frag instanceof DialogFragment) {
@@ -1362,36 +1908,36 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             dialog.dismiss();
         }
     }
-
-
-    /**
-     * Implements callback methods for service binding.
+    
+    
+    /** 
+     * Implements callback methods for service binding. 
      */
     private class OperationsServiceConnection implements ServiceConnection {
 
         @Override
         public void onServiceConnected(ComponentName component, IBinder service) {
             if (component.equals(
-                new ComponentName(AuthenticatorActivity.this, OperationsService.class)
-            )) {
+                    new ComponentName(AuthenticatorActivity.this, OperationsService.class)
+                )) {
                 mOperationsServiceBinder = (OperationsService.OperationsServiceBinder) service;
-
+                
                 doOnResumeAndBound();
-
+                
             }
-
+            
         }
 
         @Override
         public void onServiceDisconnected(ComponentName component) {
             if (component.equals(
-                new ComponentName(AuthenticatorActivity.this, OperationsService.class)
-            )) {
+                    new ComponentName(AuthenticatorActivity.this, OperationsService.class)
+                )) {
                 Log_OC.e(TAG, "Operations service crashed");
                 mOperationsServiceBinder = null;
             }
         }
-
+    
     }
 
     /**
@@ -1403,7 +1949,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         // Show a dialog with the certificate info
         CredentialsDialogFragment dialog =
-            CredentialsDialogFragment.newInstanceForCredentials(webView, handler);
+                CredentialsDialogFragment.newInstanceForCredentials(webView, handler);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.addToBackStack(null);
@@ -1412,9 +1958,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         if (!mIsFirstAuthAttempt) {
             Toast.makeText(
-                getApplicationContext(),
-                getText(es.juntadeandalucia.nube.R.string.saml_authentication_wrong_pass),
-                Toast.LENGTH_LONG
+                    getApplicationContext(), 
+                    getText(es.juntadeandalucia.nube.R.string.saml_authentication_wrong_pass),
+                    Toast.LENGTH_LONG
             ).show();
         } else {
             mIsFirstAuthAttempt = false;

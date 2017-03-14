@@ -8,14 +8,16 @@
     <string name ="db_name">nubeJunta</string>
     <string name ="data_folder">nubeJunta</string>
     <string name ="log_name">NubeJunta_</string>
-    <string name ="default_display_name_for_root_folder">nubeJunta</string>
+    <string name ="default_display_name_for_root_folder">Nube Junta</string>
     <string name ="user_agent">Mozilla/5.0 (Android) nubeJunta-android/%1$s</string>
     
     <!-- URLs and flags related -->
-    <string name="server_url"></string>
-    <bool name="show_server_url_input">true</bool>
-    <bool name="show_welcome_link">true</bool>
-	<string name="welcome_link_url">"https://owncloud.com/mobile/new"</string>
+    <string name="server_url">http://10.240.240.18/owncloud</string>
+    <string name="help_url">https://https://correo.juntadeandalucia.es/ayuda/index.html#/</string>
+    <string name="terms_url">https://correo.juntadeandalucia.es/ayuda/index.html#/term_nube</string>
+    <bool name="show_server_url_input">false</bool>
+    <bool name="show_welcome_link">false</bool>
+	<string name="welcome_link_url">http://10.240.240.18/owncloud</string>
 	<string name="share_api_link"></string>
     
     <!-- Flags to setup the authentication methods available in the app -->
@@ -34,13 +36,13 @@
     <color name="login_background_color">#FFFFFF</color>
     <color name="login_logo_background_color">#FFFFFF</color>
     <color name="background_color">#FFFFFF</color>
-    <color name="actionbar_start_color">#1D2D44</color>
-    <color name="actionbar_end_color">#1D2D44</color>
-    <color name="primary_button_background_color">@color/owncloud_blue_accent</color>
+    <color name="actionbar_start_color">#09551b</color>
+    <color name="actionbar_end_color">#09551b</color>
+    <color name="primary_button_background_color">#2F960F</color>
     <color name="primary_button_text_color">@color/white</color>
     <color name="secondary_button_background_color">#D6D7D7</color>
     <color name="secondary_button_text_color">@color/black</color>
-    <color name="drawer_header_color">@color/owncloud_blue_accent</color>
+    <color name="drawer_header_color">#2F960F</color>
 
     <color name="terms_link_color">#2F960F</color>
 
@@ -51,16 +53,16 @@
     <bool name="multiaccount_support">true</bool>
     
     <!-- Help, imprint and feedback -->
-    <bool name="help_enabled">true</bool>
+    <bool name="help_enabled">false</bool>
     <bool name="imprint_enabled">false</bool> 
-    <bool name="recommend_enabled">true</bool>
-    <bool name="feedback_enabled">true</bool>
+    <bool name="recommend_enabled">false</bool>
+    <bool name="feedback_enabled">false</bool>
     <bool name="logger_enabled">false</bool>
-    <string name="url_help">http://owncloud.com/mobile/help</string>
+    <string name="url_help">https://https://correo.juntadeandalucia.es/ayuda/index.html#/</string>
     <string name="url_imprint"></string>
     <string name="mail_recommend">"mailto:"</string>
-    <string name="mail_feedback">"mailto:apps@owncloud.com"</string>
-    <string name="url_app_download">"https://play.google.com/store/apps/details?id=com.owncloud.android"</string>
+    <string name="mail_feedback">"mailto:aplicaciones.moviles@juntadeandalucia.es"</string>
+    <string name="url_app_download">"https://play.google.com/store/apps/details?id=es.juntadeandalucia.nube"</string>
 
     <!--Destination mail for sending log files -->
     <string name="mail_logger"></string>
