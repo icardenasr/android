@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-  <string name="about_android">%1$s Aplicación de Android</string>
-  <string name="about_version">versión %1$s</string>
+  <string name="about_android">Nube Junta v1.0.0</string>
+  <string name="about_version">Aplicación corporativa de la Junta de Andalucía</string>
   <string name="actionbar_sync">Actualizar</string>
   <string name="actionbar_upload">Subir</string>
   <string name="actionbar_upload_from_apps">Contenido de otras aplicaciones</string>
   <string name="actionbar_upload_files">Archivos</string>
   <string name="actionbar_open_with">Abrir con</string>
   <string name="actionbar_mkdir">Nueva carpeta</string>
-  <string name="actionbar_settings">Configuración</string>
+  <string name="actionbar_settings">Ajustes</string>
   <string name="actionbar_see_details">Detalles</string>
   <string name="actionbar_send_file">Enviar</string>
   <string name="actionbar_sort">Ordenar</string>
@@ -62,7 +62,7 @@
   <string name="uploader_top_message">Escoger carpeta de carga:</string>
   <string name="uploader_wrn_no_account_title">No se encontró la cuenta</string>
   <string name="uploader_wrn_no_account_text">No hay %1$s cuentas en tu dispositivo. Por favor añade una cuenta primero.</string>
-  <string name="uploader_wrn_no_account_setup_btn_text">Configuración</string>
+  <string name="uploader_wrn_no_account_setup_btn_text">Ajustes</string>
   <string name="uploader_wrn_no_account_quit_btn_text">Salir</string>
   <string name="uploader_error_title_no_file_to_upload">Ningún archivo para subir</string>
   <string name="uploader_error_message_received_piece_of_text">%1$s  No puedo subir un texto como si fuera un archivo.</string>
@@ -324,8 +324,10 @@
   <string name="forbidden_permissions_create">para crear el archivo</string>
   <string name="uploader_upload_forbidden_permissions">para subir archivos a esta carpeta</string>
   <string name="downloader_download_file_not_found">Este archivo ya no se encuentra en el servidor</string>
-  <string name="prefs_category_accounts">Cuentas</string>
+  <string name="prefs_category_accounts">Cuenta</string>
   <string name="prefs_add_account">Agregar cuenta</string>
+  <string name="prefs_remove_account">Salir</string>
+    <string name="prefs_remove_account_message">¿Deseas salir (se desconectarán todas las cuentas)?</string>
   <string name="auth_redirect_non_secure_connection_title">La conexión segura está siendo redirigida por una ruta insegura.</string>
   <string name="actionbar_logger">Registros</string>
   <string name="log_send_history_button">Mandar historial.</string>

@@ -51,14 +51,6 @@
 			android:defaultValue="NOTHING"
 			android:summary="%s"
 			/>
-	    <!-- DISABLED FOR RELEASE UNTIL FIXED
-	    CheckBoxPreference android:key="log_to_file"
-	                        android:title="@string/prefs_log_title"
-	                        android:summary="@string/prefs_log_summary"/>
-		<Preference 		android:key="log_history"
-	                        android:title="@string/prefs_log_title_history"
-	                        android:summary="@string/prefs_log_summary_history"/ -->
-                        
     </PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/prefs_category_details">

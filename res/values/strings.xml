@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="about_android">%1$s Android app</string>
-    <string name="about_version">version %1$s</string>
+    <string name="about_android">Nube Junta v1.0.0</string>
+    <string name="about_version">Aplicación corporativa de la Junta de Andalucía</string>
     <string name="actionbar_sync">Refresh account</string>
     <string name="actionbar_upload">Upload</string>
     <string name="actionbar_upload_from_apps">Content from other apps</string>
@@ -345,8 +345,10 @@
     <string name="uploader_upload_forbidden_permissions">to upload in this folder</string>
     <string name="downloader_download_file_not_found">The file is no longer available on the server</string>
 
-    <string name="prefs_category_accounts">Accounts</string>
+    <string name="prefs_category_accounts">Account</string>
     <string name="prefs_add_account">Add account</string>
+    <string name="prefs_remove_account">Logout</string>
+    <string name="prefs_remove_account_message">Do you want to logout (all accounts)?</string>
     <string name="auth_redirect_non_secure_connection_title">Secure connection is redirected through an unsecured route.</string>
 
 	<string name="actionbar_logger">Logs</string>

@@ -27,6 +27,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -450,9 +451,8 @@ public class Preferences extends PreferenceActivity
         /* About App */
        pAboutApp = (Preference) findPreference("about_app");
        if (pAboutApp != null) { 
-               pAboutApp.setTitle(String.format(getString(es.juntadeandalucia.nube.R.string.about_android),
-                       getString(es.juntadeandalucia.nube.R.string.app_name)));
-               pAboutApp.setSummary(String.format(getString(es.juntadeandalucia.nube.R.string.about_version), appVersion));
+               pAboutApp.setTitle(getString(es.juntadeandalucia.nube.R.string.about_android));
+               pAboutApp.setSummary(getString(es.juntadeandalucia.nube.R.string.about_version));
        }
 
        loadInstantUploadPath();
@@ -798,9 +798,12 @@ public class Preferences extends PreferenceActivity
 
             // Add Create Account preference at the end of account list if
             // Multiaccount is enabled
-            if (getResources().getBoolean(es.juntadeandalucia.nube.R.bool.multiaccount_support)) {
+            /*if (getResources().getBoolean(es.juntadeandalucia.nube.R.bool.multiaccount_support)) {
                 createAddAccountPreference();
-            }
+            }*/
+
+            // Opcion para salir de la aplicacion
+            createRemoveAccountPreference();
 
         }
     }
@@ -821,6 +824,63 @@ public class Preferences extends PreferenceActivity
                 am.addAccount(MainApp.getAccountType(), null, null, null, Preferences.this,
                         null, null);
                 return true;
+            }
+        });
+
+    }
+
+    /**
+     * Create the preference for allow adding new accounts
+     */
+    private void createRemoveAccountPreference() {
+        Preference removeAccountPref = new Preference(this);
+      removeAccountPref.setKey("remove_account");
+      removeAccountPref.setTitle(getString(es.juntadeandalucia.nube.R.string.prefs_remove_account));
+        mAccountsPrefCategory.addPreference(removeAccountPref);
+
+      removeAccountPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+              AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getApplicationContext());
+              alertBuilder.setTitle(getString(es.juntadeandalucia.nube.R.string.prefs_remove_account));
+              alertBuilder.setMessage(getString(es.juntadeandalucia.nube.R.string.prefs_remove_account_message));
+              alertBuilder.setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+              });
+              alertBuilder.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Borramos la cuenta del sistema
+                    final AccountManager accountManager = AccountManager.get(getApplicationContext());
+                    Account accounts[] = accountManager.getAccountsByType(MainApp.getAccountType());
+                    for (Account a : accounts) {
+                      accountManager.removeAccount(a, new AccountManagerCallback<Boolean>() {
+                        @Override
+                        public void run(AccountManagerFuture<Boolean> future) {
+                          try {
+                            // Obtenemos el resultado del borrado
+                            if (future.getResult()) {
+                              if (accountManager.getAccountsByType(MainApp.getAccountType()).length == 0) {
+                                // Show create account screen
+                                accountManager.addAccount(MainApp.getAccountType(), null, null, null, Preferences.this,
+                                    null,
+                                    null);
+                              }
+                            }
+                          }
+                          catch(Exception ex){}
+                        }
+                      }, null);
+                    }
+                }
+              });
+
+              AlertDialog alert= alertBuilder.create();
+              alert.show();
+
+              return true;
             }
         });
 
