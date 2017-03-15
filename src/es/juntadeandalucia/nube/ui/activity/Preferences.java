@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -63,6 +65,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import es.juntadeandalucia.nube.BuildConfig;
@@ -106,6 +109,7 @@ public class Preferences extends PreferenceActivity
     private String mAccountName;
     private boolean mShowContextMenu = false;
     private String mUploadPath;
+    /*
     private PreferenceCategory mPrefInstantUploadCategory;
     private Preference mPrefInstantUpload;
     private Preference mPrefInstantUploadBehaviour;
@@ -115,11 +119,11 @@ public class Preferences extends PreferenceActivity
     private Preference mPrefInstantVideoUploadPath;
     private Preference mPrefInstantVideoUploadPathWiFi;
     private String mUploadVideoPath;
+    */
 
     protected FileDownloader.FileDownloaderBinder mDownloaderBinder = null;
     protected FileUploader.FileUploaderBinder mUploaderBinder = null;
     private ServiceConnection mDownloadServiceConnection, mUploadServiceConnection = null;
-
 
     @SuppressWarnings("deprecation")
     @Override
@@ -244,13 +248,12 @@ public class Preferences extends PreferenceActivity
             
         }
 
-
-
         PreferenceCategory preferenceCategory = (PreferenceCategory) findPreference("more");
         
         boolean helpEnabled = getResources().getBoolean(es.juntadeandalucia.nube.R.bool.help_enabled);
         Preference pHelp =  findPreference("help");
-        if (pHelp != null ){
+        Preference pSupport =  findPreference("support");
+        if ( (pHelp != null) && (pSupport != null) ) {
             if (helpEnabled) {
                 pHelp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                     @Override
@@ -258,6 +261,18 @@ public class Preferences extends PreferenceActivity
                         String helpWeb   =(String) getText(es.juntadeandalucia.nube.R.string.url_help);
                         if (helpWeb != null && helpWeb.length() > 0) {
                             Uri uriUrl = Uri.parse(helpWeb);
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+                            startActivity(intent);
+                        }
+                        return true;
+                    }
+                });
+                pSupport.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        String supportWeb   =(String) getText(es.juntadeandalucia.nube.R.string.url_support);
+                        if (supportWeb != null && supportWeb.length() > 0) {
+                            Uri uriUrl = Uri.parse(supportWeb);
                             Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
                             startActivity(intent);
                         }
@@ -332,7 +347,10 @@ public class Preferences extends PreferenceActivity
             }
         }
 
+        /*
         boolean loggerEnabled = getResources().getBoolean(es.juntadeandalucia.nube.R.bool.logger_enabled) || BuildConfig.DEBUG;
+        */
+        boolean loggerEnabled = getResources().getBoolean(es.juntadeandalucia.nube.R.bool.logger_enabled);
         Preference pLogger =  findPreference("logger");
         if (pLogger != null){
             if (loggerEnabled) {
@@ -372,6 +390,7 @@ public class Preferences extends PreferenceActivity
             }
         }
 
+        /*
         mPrefInstantUploadPath =  findPreference("instant_upload_path");
         if (mPrefInstantUploadPath != null){
 
@@ -447,12 +466,26 @@ public class Preferences extends PreferenceActivity
         toggleInstantUploadBehaviour(
                 ((CheckBoxPreference)mPrefInstantVideoUpload).isChecked(),
                 ((CheckBoxPreference)mPrefInstantUpload).isChecked());
+        */
 
         /* About App */
        pAboutApp = (Preference) findPreference("about_app");
        if (pAboutApp != null) { 
                pAboutApp.setTitle(getString(es.juntadeandalucia.nube.R.string.about_android));
                pAboutApp.setSummary(getString(es.juntadeandalucia.nube.R.string.about_version));
+
+           pAboutApp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+               @Override
+               public boolean onPreferenceClick(Preference preference) {
+                   String aboutWeb   =(String) getText(es.juntadeandalucia.nube.R.string.url_service);
+                   if (aboutWeb != null && aboutWeb.length() > 0) {
+                       Uri uriUrl = Uri.parse(aboutWeb);
+                       Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+                       startActivity(intent);
+                   }
+                   return true;
+               }
+           });
        }
 
        loadInstantUploadPath();
@@ -469,9 +502,9 @@ public class Preferences extends PreferenceActivity
             bindService(new Intent(this, FileUploader.class), mUploadServiceConnection,
                     Context.BIND_AUTO_CREATE);
         }
-
     }
-    
+
+    /*
     private void toggleInstantPictureOptions(Boolean value){
         if (value){
             mPrefInstantUploadCategory.addPreference(mPrefInstantUploadPathWiFi);
@@ -499,6 +532,7 @@ public class Preferences extends PreferenceActivity
             mPrefInstantUploadCategory.removePreference(mPrefInstantUploadBehaviour);
         }
     }
+    */
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -590,7 +624,9 @@ public class Preferences extends PreferenceActivity
             mUploadPath = DisplayUtils.getPathWithoutLastSlash(mUploadPath);
 
             // Show the path on summary preference
+            /*
             mPrefInstantUploadPath.setSummary(mUploadPath);
+             */
 
             saveInstantUploadPathOnPreferences();
 
@@ -599,12 +635,14 @@ public class Preferences extends PreferenceActivity
             OCFile folderToUploadVideo =
                     (OCFile) data.getParcelableExtra(UploadPathActivity.EXTRA_FOLDER);
 
+            /*
             mUploadVideoPath = folderToUploadVideo.getRemotePath();
 
             mUploadVideoPath = DisplayUtils.getPathWithoutLastSlash(mUploadVideoPath);
 
             // Show the video path on summary preference
             mPrefInstantVideoUploadPath.setSummary(mUploadVideoPath);
+            */
 
             saveInstantUploadVideoPathOnPreferences();
         } else if (requestCode == ACTION_REQUEST_PASSCODE && resultCode == RESULT_OK) {
@@ -833,7 +871,7 @@ public class Preferences extends PreferenceActivity
      * Create the preference for allow adding new accounts
      */
     private void createRemoveAccountPreference() {
-        Preference removeAccountPref = new Preference(this);
+        MyLogoutPreference removeAccountPref = new MyLogoutPreference(this);
       removeAccountPref.setKey("remove_account");
       removeAccountPref.setTitle(getString(es.juntadeandalucia.nube.R.string.prefs_remove_account));
         mAccountsPrefCategory.addPreference(removeAccountPref);
@@ -841,7 +879,7 @@ public class Preferences extends PreferenceActivity
       removeAccountPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-              AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getApplicationContext());
+              AlertDialog.Builder alertBuilder = new AlertDialog.Builder(Preferences.this, es.juntadeandalucia.nube.R.style.MyAlertDialogStyle);
               alertBuilder.setTitle(getString(es.juntadeandalucia.nube.R.string.prefs_remove_account));
               alertBuilder.setMessage(getString(es.juntadeandalucia.nube.R.string.prefs_remove_account_message));
               alertBuilder.setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
@@ -893,7 +931,9 @@ public class Preferences extends PreferenceActivity
         SharedPreferences appPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mUploadPath = appPrefs.getString("instant_upload_path", getString(es.juntadeandalucia.nube.R.string.instant_upload_path));
+        /*
         mPrefInstantUploadPath.setSummary(mUploadPath);
+        */
     }
 
     /**
@@ -913,8 +953,10 @@ public class Preferences extends PreferenceActivity
     private void loadInstantUploadVideoPath() {
         SharedPreferences appPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        /*
         mUploadVideoPath = appPrefs.getString("instant_video_upload_path", getString(es.juntadeandalucia.nube.R.string.instant_upload_path));
         mPrefInstantVideoUploadPath.setSummary(mUploadVideoPath);
+        */
     }
 
     /**
@@ -924,7 +966,9 @@ public class Preferences extends PreferenceActivity
         SharedPreferences appPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = appPrefs.edit();
+        /*
         editor.putString("instant_video_upload_path", mUploadVideoPath);
+        */
         editor.commit();
     }
 
@@ -989,5 +1033,27 @@ public class Preferences extends PreferenceActivity
                 mUploaderBinder = null;
             }
         }
-    };
+    }
+
+    public class MyLogoutPreference extends Preference {
+
+        public MyLogoutPreference(Context context) {
+            super(context);
+        }
+
+        public MyLogoutPreference(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public MyLogoutPreference(Context context, AttributeSet attrs, int defStyle) {
+            super(context, attrs, defStyle);
+        }
+
+        @Override
+        protected void onBindView(View view) {
+            super.onBindView(view);
+            TextView titleView = (TextView) view.findViewById(android.R.id.title);
+            titleView.setTextColor(Color.RED);
+        }
+    }
 }

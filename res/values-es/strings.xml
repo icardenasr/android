@@ -44,6 +44,7 @@
   <string name="prefs_log_summary_history">Esto muestra los registros grabados</string>
   <string name="prefs_log_delete_history_button">Eliminar Historial</string>
   <string name="prefs_help">Ayuda</string>
+  <string name="prefs_support">Soporte</string>
   <string name="prefs_recommend">Recomendar a un amigo</string>
   <string name="prefs_feedback">Mensajes de retroalimentación</string>
   <string name="prefs_imprint">pie de imprenta</string>
@@ -350,7 +351,7 @@
   <string name="copy_file_error">Hubo un error al tratar de copiar este archivo o carpeta</string>
   <string name="forbidden_permissions_copy">para copiar este archivo</string>
   <string name="prefs_category_instant_uploading">Subidas instantáneas</string>
-  <string name="prefs_category_details">Detalles</string>
+  <string name="prefs_category_details">Seguridad</string>
   <string name="prefs_instant_video_upload_path_title">Ruta de subida de vídeo </string>
   <string name="sync_folder_failed_content">La sincronización de la carpeta %1$s no se pudo completar</string>
   <string name="shared_subject_header">compartido</string>

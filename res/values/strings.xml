@@ -44,6 +44,7 @@
     <string name="prefs_log_summary_history">This shows the recorded logs</string>
     <string name="prefs_log_delete_history_button">Delete history</string>
     <string name="prefs_help">Help</string>
+    <string name="prefs_support">Support</string>
     <string name="prefs_recommend">Recommend to a friend</string>
     <string name="prefs_feedback">Feedback</string>
     <string name="prefs_imprint">Imprint</string>
@@ -377,7 +378,7 @@
     <string name="forbidden_permissions_copy">to copy this file</string>
 
     <string name="prefs_category_instant_uploading">Instant uploads</string>
-    <string name="prefs_category_details">Details</string>
+    <string name="prefs_category_details">Security</string>
 
 	<string name="prefs_instant_video_upload_path_title">Upload video path</string>
     <string name="sync_folder_failed_content">Synchronization of %1$s folder could not be completed</string>

@@ -155,6 +155,13 @@
 		<item name="colorAccent">@color/owncloud_blue_accent</item>
 	</style>
 
+	<style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+		<item name="windowNoTitle">false</item>
+		<item name="colorAccent">@color/owncloud_blue_accent</item>
+		<item name="buttonBarButtonStyle">@style/Theme.ownCloud.Dialog.ButtonBar.Button</item>
+		<item name="buttonBarStyle">@style/Theme.ownCloud.Dialog.ButtonBar</item>
+	</style>
+
 	<style name="menu_labels_style">
 		<item name="android:background">@drawable/fab_label_background</item>
 		<item name="android:textColor">@color/fab_white</item>
