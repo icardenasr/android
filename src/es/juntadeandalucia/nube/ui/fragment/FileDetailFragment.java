@@ -22,6 +22,7 @@
 package es.juntadeandalucia.nube.ui.fragment;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -60,6 +61,7 @@ import es.juntadeandalucia.nube.files.services.FileDownloader;
 /**
  * This Fragment is used to display the details about a file.
  */
+@SuppressLint("ValidFragment")
 public class FileDetailFragment extends FileFragment implements OnClickListener {
 
     private int mLayout;

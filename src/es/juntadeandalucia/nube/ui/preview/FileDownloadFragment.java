@@ -26,6 +26,7 @@ import es.juntadeandalucia.nube.datamodel.OCFile;
 import es.juntadeandalucia.nube.ui.fragment.FileFragment;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -44,6 +45,7 @@ import es.juntadeandalucia.nube.utils.DisplayUtils;
 /**
  * This Fragment is used to monitor the progress of a file downloading.
  */
+@SuppressLint("ValidFragment")
 public class FileDownloadFragment extends FileFragment implements OnClickListener {
 
     public static final String EXTRA_FILE = "FILE";

@@ -22,6 +22,7 @@
 package es.juntadeandalucia.nube.ui.fragment;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -57,6 +58,7 @@ import es.juntadeandalucia.nube.datamodel.FileDataStorageManager;
  * Use the {@link SearchShareesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressLint("ValidFragment")
 public class SearchShareesFragment extends Fragment implements ShareUserListAdapter.ShareUserAdapterListener {
     private static final String TAG = SearchShareesFragment.class.getSimpleName();
 

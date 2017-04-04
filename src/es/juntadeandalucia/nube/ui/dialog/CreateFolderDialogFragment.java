@@ -24,6 +24,7 @@ import es.juntadeandalucia.nube.datamodel.OCFile;
 import es.juntadeandalucia.nube.lib.resources.files.FileUtils;
 import es.juntadeandalucia.nube.ui.activity.ComponentsGetter;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -41,6 +42,7 @@ import android.widget.Toast;
  * 
  *  Triggers the folder creation when name is confirmed.
  */
+@SuppressLint("ValidFragment")
 public class CreateFolderDialogFragment
         extends DialogFragment implements DialogInterface.OnClickListener {
 

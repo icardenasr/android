@@ -20,6 +20,7 @@
 
 package es.juntadeandalucia.nube.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import es.juntadeandalucia.nube.lib.common.utils.Log_OC;
 /**
  *  Extending ExtendedListFragment. This allows dividing list in groups.
  */
+@SuppressLint("ValidFragment")
 public class ExpandableListFragment extends ExtendedListFragment implements OnChildClickListener
  {
     protected static final String TAG = ExpandableListFragment.class.getSimpleName();

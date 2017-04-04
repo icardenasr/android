@@ -22,6 +22,7 @@
 package es.juntadeandalucia.nube.ui.fragment;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -74,6 +75,7 @@ import java.util.Date;
  * Use the {@link ShareFileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressLint("ValidFragment")
 public class ShareFileFragment extends Fragment
         implements ShareUserListAdapter.ShareUserAdapterListener {
 

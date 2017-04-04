@@ -23,6 +23,7 @@ package es.juntadeandalucia.nube.ui.fragment;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +43,7 @@ import es.juntadeandalucia.nube.ui.adapter.LocalFileListAdapter;
 /**
  * A Fragment that lists all files and folders in a given LOCAL path.
  */
+@SuppressLint("ValidFragment")
 public class LocalFileListFragment extends ExtendedListFragment {
     private static final String TAG = "LocalFileListFragment";
     

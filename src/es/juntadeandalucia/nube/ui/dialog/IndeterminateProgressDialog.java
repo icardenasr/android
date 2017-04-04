@@ -19,6 +19,7 @@
 
 package es.juntadeandalucia.nube.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -29,6 +30,7 @@ import android.view.KeyEvent;
 import android.widget.ProgressBar;
 
 
+@SuppressLint("ValidFragment")
 public class IndeterminateProgressDialog extends DialogFragment {
 
     private static final String ARG_MESSAGE_ID = IndeterminateProgressDialog.class.getCanonicalName() + ".ARG_MESSAGE_ID";

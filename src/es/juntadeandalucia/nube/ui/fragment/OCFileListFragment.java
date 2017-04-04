@@ -22,6 +22,7 @@
  */
 package es.juntadeandalucia.nube.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,7 @@ import java.io.File;
  *
  * TODO refactor to get rid of direct dependency on FileDisplayActivity
  */
+@SuppressLint("ValidFragment")
 public class OCFileListFragment extends ExtendedListFragment
         implements FileActionsDialogFragment.FileActionsDialogFragmentListener {
 

@@ -22,6 +22,7 @@ package es.juntadeandalucia.nube.ui.dialog;
 import es.juntadeandalucia.nube.R;
 import es.juntadeandalucia.nube.authentication.AuthenticatorActivity;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.support.v7.app.AlertDialog.Builder;
@@ -41,6 +42,7 @@ import android.widget.LinearLayout;
  *  Dialog to input authentication credentials
  * 
  */
+@SuppressLint("ValidFragment")
 public class CredentialsDialogFragment extends DialogFragment
     implements DialogInterface.OnClickListener {
 

@@ -1,5 +1,6 @@
 package es.juntadeandalucia.nube.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import java.util.List;
 /**
  * Dialog for choosing a file action.
  */
+@SuppressLint("ValidFragment")
 public class AccountActionsDialogFragment extends DialogFragment implements
         OnItemClickListener {
     private static final String ARG_ITEM_LIST = "ITEM_LIST";

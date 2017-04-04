@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.net.http.SslError;
@@ -52,6 +53,7 @@ import es.juntadeandalucia.nube.ui.adapter.X509CertificateViewAdapter;
  * Abstract implementation of common functionality for different dialogs that
  * get the information about the error and the certificate from different classes.
  */
+@SuppressLint("ValidFragment")
 public class SslUntrustedCertDialog extends DialogFragment {
     
     private final static String TAG = SslUntrustedCertDialog.class.getSimpleName();

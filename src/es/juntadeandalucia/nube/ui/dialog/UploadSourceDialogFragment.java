@@ -20,6 +20,7 @@
 package es.juntadeandalucia.nube.ui.dialog;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -40,6 +41,7 @@ import es.juntadeandalucia.nube.ui.activity.UploadFilesActivity;
  *
  * Assumes that its parent activity extends {@link FileActivity}
  */
+@SuppressLint("ValidFragment")
 public class UploadSourceDialogFragment extends DialogFragment {
 
     private final static String TAG =  UploadSourceDialogFragment.class.getSimpleName();

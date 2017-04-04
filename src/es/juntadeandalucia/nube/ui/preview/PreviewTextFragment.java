@@ -20,6 +20,7 @@
 package es.juntadeandalucia.nube.ui.preview;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -52,6 +53,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+@SuppressLint("ValidFragment")
 public class PreviewTextFragment extends FileFragment {
     private static final String EXTRA_FILE = "FILE";
     private static final String EXTRA_ACCOUNT = "ACCOUNT";

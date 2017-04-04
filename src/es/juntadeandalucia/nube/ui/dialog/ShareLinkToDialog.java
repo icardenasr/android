@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -50,6 +51,7 @@ import es.juntadeandalucia.nube.ui.activity.CopyToClipboardActivity;
  * Dialog showing a list activities able to resolve a given Intent, 
  * filtering out the activities matching give package names.
  */
+@SuppressLint("ValidFragment")
 public class ShareLinkToDialog  extends DialogFragment {
     
     private final static String TAG =  ShareLinkToDialog.class.getSimpleName();

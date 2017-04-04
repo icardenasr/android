@@ -18,6 +18,7 @@
  */
 package es.juntadeandalucia.nube.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -39,6 +40,7 @@ import es.juntadeandalucia.nube.ui.activity.FileActivity;
  * Triggers the share when the password is introduced.
  */
 
+@SuppressLint("ValidFragment")
 public class SharePasswordDialogFragment extends DialogFragment
         implements DialogInterface.OnClickListener {
 

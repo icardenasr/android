@@ -21,6 +21,7 @@
 
 package es.juntadeandalucia.nube.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -36,6 +37,7 @@ import es.juntadeandalucia.nube.R;
 /**
  * Dialog which will be displayed to user upon keep-in-sync file conflict.
  */
+@SuppressLint("ValidFragment")
 public class ConflictsResolveDialog extends DialogFragment {
 
     public static enum Decision { 

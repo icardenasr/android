@@ -63,6 +63,7 @@ import third_parties.michaelOrtiz.TouchImageViewCustom;
  * If the {@link OCFile} passed is not downloaded, an {@link IllegalStateException} is generated on
  * instantiation too.
  */
+@SuppressLint("ValidFragment")
 public class PreviewImageFragment extends FileFragment {
 
     public static final String EXTRA_FILE = "FILE";

@@ -26,6 +26,7 @@ package es.juntadeandalucia.nube.ui.dialog;
  *  Triggers the removal according to the user response.
  */
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 
@@ -33,7 +34,8 @@ import es.juntadeandalucia.nube.datamodel.FileDataStorageManager;
 import es.juntadeandalucia.nube.datamodel.OCFile;
 import es.juntadeandalucia.nube.ui.activity.ComponentsGetter;
 
-public class RemoveFileDialogFragment extends ConfirmationDialogFragment 
+@SuppressLint("ValidFragment")
+public class RemoveFileDialogFragment extends ConfirmationDialogFragment
 implements ConfirmationDialogFragment.ConfirmationDialogFragmentListener {
 
     private OCFile mTargetFile;

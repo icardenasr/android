@@ -19,6 +19,7 @@
 
 package es.juntadeandalucia.nube.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import es.juntadeandalucia.nube.utils.DisplayUtils;
 /**
  * Dialog to show the contents of res/raw/CHANGELOG.txt
  */
+@SuppressLint("ValidFragment")
 public class ChangelogDialog extends DialogFragment {
 
     private static final String ARG_CANCELABLE = ChangelogDialog.class.getCanonicalName() +

@@ -21,6 +21,7 @@
 package es.juntadeandalucia.nube.ui.dialog;
 
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import java.util.Calendar;
 /**
  *  Dialog requesting a date after today.
  */
+@SuppressLint("ValidFragment")
 public class ExpirationDatePickerDialogFragment
         extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {

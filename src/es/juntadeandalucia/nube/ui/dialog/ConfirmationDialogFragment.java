@@ -20,6 +20,7 @@
 
 package es.juntadeandalucia.nube.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -27,6 +28,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 
+@SuppressLint("ValidFragment")
 public class ConfirmationDialogFragment extends DialogFragment {
 
     public final static String ARG_MESSAGE_RESOURCE_ID = "resource_id";

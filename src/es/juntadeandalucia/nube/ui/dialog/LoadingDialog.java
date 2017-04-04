@@ -20,6 +20,7 @@ package es.juntadeandalucia.nube.ui.dialog;
 
 import es.juntadeandalucia.nube.R;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+@SuppressLint("ValidFragment")
 public class LoadingDialog extends DialogFragment {
 
     private String mMessage;

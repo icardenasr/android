@@ -22,6 +22,7 @@
 package es.juntadeandalucia.nube.ui.fragment;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
@@ -42,6 +43,7 @@ import es.juntadeandalucia.nube.lib.resources.shares.SharePermissionsBuilder;
 import es.juntadeandalucia.nube.lib.resources.shares.ShareType;
 import es.juntadeandalucia.nube.ui.activity.FileActivity;
 
+@SuppressLint("ValidFragment")
 public class EditShareFragment extends Fragment {
 
     private static final String TAG = EditShareFragment.class.getSimpleName();

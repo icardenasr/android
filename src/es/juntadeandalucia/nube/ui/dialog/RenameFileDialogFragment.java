@@ -25,6 +25,7 @@ package es.juntadeandalucia.nube.ui.dialog;
  * 
  *  Triggers the rename operation. 
  */
+import android.annotation.SuppressLint;
 import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -47,6 +48,7 @@ import es.juntadeandalucia.nube.ui.activity.ComponentsGetter;
  * 
  *  Triggers the rename operation when name is confirmed.
  */
+@SuppressLint("ValidFragment")
 public class RenameFileDialogFragment
         extends DialogFragment implements DialogInterface.OnClickListener {
 

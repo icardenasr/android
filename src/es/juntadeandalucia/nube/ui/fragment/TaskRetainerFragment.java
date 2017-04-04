@@ -18,6 +18,7 @@
  */
 package es.juntadeandalucia.nube.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import es.juntadeandalucia.nube.ui.asynctasks.CopyAndUploadContentUrisTask;
 /**
  * Fragment retaining a background task across configuration changes.
  */
+@SuppressLint("ValidFragment")
 public class TaskRetainerFragment extends Fragment {
 
     public static final String FTAG_TASK_RETAINER_FRAGMENT = "TASK_RETAINER_FRAGMENT";

@@ -19,6 +19,7 @@
  */
 package es.juntadeandalucia.nube.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import es.juntadeandalucia.nube.ui.adapter.ExpandableUploadListAdapter;
  * A Fragment that lists all files and folders in a given LOCAL path.
  * 
  */
+@SuppressLint("ValidFragment")
 public class UploadListFragment extends ExpandableListFragment {
     static private String TAG = UploadListFragment.class.getSimpleName();
 

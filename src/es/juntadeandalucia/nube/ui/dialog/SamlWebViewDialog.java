@@ -47,6 +47,7 @@ import es.juntadeandalucia.nube.lib.common.utils.Log_OC;
 /**
  * Dialog to show the WebView for SAML Authentication
  */
+@SuppressLint("ValidFragment")
 public class SamlWebViewDialog extends DialogFragment {
 
     public final String SAML_DIALOG_TAG = "SamlWebViewDialog";

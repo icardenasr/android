@@ -20,6 +20,7 @@
 package es.juntadeandalucia.nube.ui.preview;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -71,6 +72,7 @@ import es.juntadeandalucia.nube.ui.fragment.FileFragment;
  * By now, if the {@link OCFile} passed is not downloaded, an {@link IllegalStateException} is
  * generated on instantiation too.
  */
+@SuppressLint("ValidFragment")
 public class PreviewMediaFragment extends FileFragment implements
         OnTouchListener {
 

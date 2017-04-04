@@ -21,6 +21,7 @@
 package es.juntadeandalucia.nube.ui.fragment;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
@@ -33,6 +34,7 @@ import es.juntadeandalucia.nube.files.services.FileDownloader;
 /**
  * Common methods for {@link Fragment}s containing {@link OCFile}s
  */
+@SuppressLint("ValidFragment")
 public class FileFragment extends Fragment {
     
     private OCFile mFile;
