@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="MissingTranslation">
     <!-- App name  and other strings-->
     <string name="app_name">Nube Junta</string>
     <string name="account_type">es.juntadeandalucia</string>	<!-- better if was a domain name; but changing it now would require migrate accounts when the app is updated -->
