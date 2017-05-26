@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-  <string name="about_android">Nube Junta v1.0.0</string>
+  <string name="about_android">Ficheros Junta v1.0.0</string>
   <string name="about_version">Aplicación corporativa de la Junta de Andalucía</string>
   <string name="actionbar_sync">Actualizar</string>
   <string name="actionbar_upload">Subir</string>

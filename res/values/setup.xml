@@ -2,19 +2,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
            tools:ignore="MissingTranslation">
     <!-- App name  and other strings-->
-    <string name="app_name">Nube Junta</string>
+    <string name="app_name">Ficheros Junta</string>
     <string name="account_type">es.juntadeandalucia</string>	<!-- better if was a domain name; but changing it now would require migrate accounts when the app is updated -->
     <string name="authority">es.juntadeandalucia.nube.provider</string>	<!-- better if was the app package with ".provider" appended ; it identifies the provider -->
     <string name ="db_file">nubejunta.db</string>
     <string name ="db_name">nubeJunta</string>
     <string name ="data_folder">nubeJunta</string>
-    <string name ="log_name">NubeJunta_</string>
-    <string name ="default_display_name_for_root_folder">Nube Junta</string>
-    <string name ="user_agent">Mozilla/5.0 (Android) nubeJunta-android/%1$s</string>
+    <string name ="log_name">FicherosJunta_</string>
+    <string name ="default_display_name_for_root_folder">Ficheros Junta</string>
+    <string name ="user_agent">Mozilla/5.0 (Android) ficherosJunta-android/%1$s</string>
     
     <!-- URLs and flags related -->
     <string name="server_url">http://10.240.240.18/owncloud</string>
-    <string name="terms_url">https://correo.juntadeandalucia.es/ayuda/index.html#/term_nube</string>
+    <string name="terms_url">https://correo.juntadeandalucia.es/ayuda/index.html#/term_ficheros</string>
     <bool name="show_server_url_input">false</bool>
     <bool name="show_welcome_link">false</bool>
 	<string name="welcome_link_url">http://10.240.240.18/owncloud</string>
@@ -60,7 +60,7 @@
     <bool name="logger_enabled">false</bool>
     <string name="url_help">https://correo.juntadeandalucia.es/ayuda/index.html#/</string>
     <string name="url_support">https://correo.juntadeandalucia.es/ayuda/index.html#/soporte</string>
-    <string name="url_service">https://nube.juntadeandalucia.es</string>
+    <string name="url_service">https://ficheros.juntadeandalucia.es</string>
     <string name="url_imprint"></string>
     <string name="mail_recommend">"mailto:"</string>
     <string name="mail_feedback">"mailto:aplicaciones.moviles@juntadeandalucia.es"</string>
