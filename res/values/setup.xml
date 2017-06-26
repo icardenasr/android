@@ -13,11 +13,13 @@
     <string name ="user_agent">Mozilla/5.0 (Android) ficherosJunta-android/%1$s</string>
     
     <!-- URLs and flags related -->
-    <string name="server_url">http://10.240.240.18/owncloud</string>
+    <!-- <string name="server_url">http://10.240.240.18/owncloud</string> -->
+    <string name="server_url">https://ficheros.juntadeandalucia.es</string>
     <string name="terms_url">https://correo.juntadeandalucia.es/ayuda/index.html#/term_ficheros</string>
     <bool name="show_server_url_input">false</bool>
     <bool name="show_welcome_link">false</bool>
-	<string name="welcome_link_url">http://10.240.240.18/owncloud</string>
+	<!-- <string name="welcome_link_url">http://10.240.240.18/owncloud</string> -->
+    <string name="welcome_link_url">https://ficheros.juntadeandalucia.es</string>
 	<string name="share_api_link"></string>
     
     <!-- Flags to setup the authentication methods available in the app -->

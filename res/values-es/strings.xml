@@ -211,7 +211,7 @@
   <string name="auth_bad_oc_version_title">No se reconoce  la versión del servidor </string>
   <string name="auth_wrong_connection_title">No se ha podido establecer la conexión</string>
   <string name="auth_secure_connection">Conexión segura establecida</string>
-  <string name="auth_unauthorized">Usuario o contraseña incorrectos</string>
+  <string name="auth_unauthorized">Usuario o contraseña incorrectos, o el usuario no tiene la cuenta activada en Ficheros Junta. Para solicitar la activación diríjase al responsable de informática de su organismo</string>
   <string name="auth_oauth_error">Autorización no satisfactoria</string>
   <string name="auth_oauth_error_access_denied">Acceso denegado por servidor de autorización</string>
   <string name="auth_wtf_reenter_URL">Estado inesperado; por favor introduzca su dirección de correo de nuevo</string>
